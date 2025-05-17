@@ -1,24 +1,13 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
+import useTheme from "@/hooks/useTheme";
 import { Moon, Sun } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 const ThemeChanger = () => {
-  const [theme, setTheme] = useState("light");
+  const [theme, changeTheme] = useTheme();
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") || "light";
-    setTheme(savedTheme);
-    document.documentElement.classList.toggle("dark", savedTheme === "dark");
-  }, []);
-
-  const handleClick = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    document.documentElement.classList.toggle("dark", newTheme === "dark");
-  };
+  const handleClick = () => changeTheme();
 
   return (
     <Button
