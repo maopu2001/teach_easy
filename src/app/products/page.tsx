@@ -2,30 +2,22 @@ import ProductCard from "@/components/ProductCard";
 
 const products = [
   {
-    id: 1,
+    id: "1",
     name: "Product 1",
     price: 3000,
-    imageUrl: "https://placehold.co/400x400/png",
+    discountInPercent: 0,
+    rating: 3,
+    imageUrl: "/95443.png",
     category: "Category 1",
-    stock: 100,
-    rating: {
-      rate: 4.5,
-      count: 10,
-    },
-    description: "Description of Product 1",
   },
   {
-    id: 2,
-    name: "Product 2",
+    id: "2",
+    name: "long name of the product that is very long",
     price: 4000,
-    imageUrl: "https://placehold.co/400x400/png",
+    discountInPercent: 90,
+    rating: 4,
+    imageUrl: "/95443.png",
     category: "Category 2",
-    stock: 50,
-    rating: {
-      rate: 4.0,
-      count: 5,
-    },
-    description: "Description of Product 2",
   },
 ];
 

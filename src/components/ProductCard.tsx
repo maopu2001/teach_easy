@@ -1,52 +1,66 @@
 import Image from "next/image";
 import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
-import { AddToCartButton, BuyNowButton } from "./CustomButtons";
+import { AddToCartButton, AddToWishlistButton } from "./CustomButtons";
+import RatingBar from "./RatingBar";
+import { formatCurrency } from "@/lib/formatter";
+import Link from "next/link";
 
 type ProductCardProps = {
   product: {
-    id: number;
+    id: string;
     name: string;
     price: number;
-    description: string;
+    discountInPercent: number;
+    rating: number;
     imageUrl: string;
     category: string;
-    stock: number;
-    rating: {
-      rate: number;
-      count: number;
-    };
   };
 };
 
 const ProductCard = ({ product }: ProductCardProps) => {
+  const discountPrice =
+    product.price - (product.price * product.discountInPercent) / 100;
+
   return (
-    <Card className="max-w-120 p-5">
-      <div className="w-full aspect-square relative mx-auto rounded-md overflow-hidden">
-        <Image
-          src={product.imageUrl}
-          alt={product.name}
-          className="object-contain"
-          fill
-        />
-      </div>
-      <div>
-        <CardHeader className="bg-gradient-to-b to-card to-50% relative -translate-y-20 -mb-20 z-10 text-lg font-semibold text-center">
-          <div className="text-primary dark:text-background">
-            {product.name}
-          </div>
-          <div className="h-0.5 bg-primary translate-y-6"></div>
-          <div className="relative z-10 w-fit h-8 bg-foreground flex items-center justify-center text-background rounded-full px-4 mx-auto">
-            {product.price} &#2547;
-          </div>
+    <Card className="max-w-100 p-2 relative overflow-hidden">
+      <Link href={`/products/${product.id}`}>
+        <CardHeader className="w-full aspect-square relative mx-auto rounded-md overflow-hidden">
+          {product.discountInPercent > 0 && (
+            <span className="absolute z-10 flex justify-center items-center font-semibold top-2 left-2 bg-primary text-white px-4 py-1 rounded-sm">
+              {product.discountInPercent}% OFF
+            </span>
+          )}
+
+          <Image
+            src={product.imageUrl}
+            alt={product.name}
+            className="object-contain"
+            fill
+          />
         </CardHeader>
-        <CardContent className="text-center text-muted-foreground py-2">
-          {product.category}
+        <CardContent className="font-semibold">
+          <p className="hover:text-primary line-clamp-2 text-lg/tight h-12 cursor-pointer">
+            {product.name}
+          </p>
         </CardContent>
-        <CardFooter className="flex justify-center items-center gap-2 flex-wrap">
-          <AddToCartButton id={product.id.toString()} />
-          <BuyNowButton id={product.id.toString()} />
-        </CardFooter>
-      </div>
+      </Link>
+      <CardFooter className="">
+        <p className="inline-flex items-center gap-2 text-lg font-semibold">
+          {formatCurrency(discountPrice)}{" "}
+          {product.discountInPercent > 0 && (
+            <span className="text-base line-through text-muted-foreground">
+              {formatCurrency(product.price)}
+            </span>
+          )}
+        </p>
+        <div className="flex justify-between items-center">
+          <RatingBar rating={product.rating} />
+          <div className="flex gap-2 text-primary">
+            <AddToWishlistButton id={product.id} />
+            <AddToCartButton id={product.id} />
+          </div>
+        </div>
+      </CardFooter>
     </Card>
   );
 };
