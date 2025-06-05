@@ -12,7 +12,7 @@ const ThemeChanger = () => {
   return (
     <Button
       onClick={handleClick}
-      className="absolute top-1/2 -translate-y-1/2 right-3 md:right-5 size-8 p-0 rounded-full cursor-pointer"
+      className="size-8 p-0 rounded-full cursor-pointer"
     >
       {theme === "light" ? <Sun id="sun" /> : <Moon id="moon" />}
     </Button>

@@ -1,8 +1,14 @@
 import { Star } from "lucide-react";
 
-const RatingBar = ({ rating }: { rating: number }) => {
+const RatingBar = ({
+  rating,
+  noOfRating,
+}: {
+  rating: number;
+  noOfRating: number;
+}) => {
   return (
-    <div className="flex">
+    <div className="flex items-center">
       {Array.from({ length: 5 }, (_, index) => (
         <Star
           className="size-4"
@@ -11,6 +17,8 @@ const RatingBar = ({ rating }: { rating: number }) => {
           color={index < Math.round(rating) ? "gold" : "currentColor"}
         />
       ))}
+      <span className="mx-2 font-semibold">{rating}</span>({noOfRating}{" "}
+      {noOfRating < 2 ? "review" : "reviews"})
     </div>
   );
 };

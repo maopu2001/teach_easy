@@ -9,7 +9,7 @@ interface Cart {
   clearCart: () => void;
 }
 
-const MAX_ITEMS = 5;
+export const MAX_ITEMS = parseInt(process.env.NEXT_PUBLIC_MAX_ITEMS || "1");
 const CART_STORAGE_KEY = "cart-storage";
 
 export const useCart = create<Cart>()(
@@ -25,12 +25,18 @@ export const useCart = create<Cart>()(
             );
             return state;
           }
+          toast.success("Item added to the cart.");
           return { cart: [...state.cart, id] };
         }),
       removeFromCart: (id) =>
-        set((state) => ({
-          cart: state.cart.filter((item) => item !== id),
-        })),
+        set((state) => {
+          const index = state.cart.findIndex((item) => item === id);
+          if (index === -1) return state;
+          const newCart = [...state.cart];
+          newCart.splice(index, 1);
+          toast.success("Item removed from the cart.");
+          return { cart: newCart };
+        }),
       clearCart: () => set({ cart: [] }),
     }),
     {

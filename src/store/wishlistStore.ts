@@ -21,6 +21,7 @@ export const useWishlist = create<Wishlist>()(
             toast.warning("Item is already in the wishlist.");
             return state;
           }
+          toast.success("Item added to the wishlist.");
           return { items: [...state.items, id] };
         }),
       removeFromWishlist: (id) =>
