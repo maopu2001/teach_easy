@@ -2,7 +2,7 @@
 import { ShoppingCart, Trash2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useCart } from "@/store/cartStore";
-import { useEffect, useState } from "react";
+import { useState, useMemo } from "react";
 import { products } from "@/lib/testProducts";
 import { formatCurrency } from "@/lib/formatter";
 import Image from "next/image";
@@ -21,26 +21,31 @@ type Product = {
   rating: number;
   noOfRating: number;
   imageUrl: string;
+  stock: number;
+  isAvailable: boolean;
+  isOutOfStock: boolean;
+  isLowStock: boolean;
 };
 
 const Cart = () => {
   const { cart, clearCart } = useCart();
-  const [cartProducts, setCartProducts] = useState<Product[]>([]);
   const [open, setOpen] = useState(false);
 
-  const productQuantities = cart.reduce((acc: Record<string, number>, id) => {
-    acc[id] = (acc[id] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const productQuantities = useMemo(() => {
+    return cart.reduce((acc: Record<string, number>, id) => {
+      acc[id] = (acc[id] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+  }, [cart]);
 
-  useEffect(() => {
+  const cartProducts = useMemo(() => {
     const tempProducts: Product[] = [];
     Object.keys(productQuantities).forEach((id) => {
       const product = products.find((p) => p.id === id);
       if (product) tempProducts.push(product);
     });
-    setCartProducts(tempProducts);
-  }, [cart.length, productQuantities]);
+    return tempProducts;
+  }, [productQuantities]);
 
   const calculateTotal = () => {
     return cartProducts.reduce((total, product) => {
@@ -63,6 +68,35 @@ const Cart = () => {
   };
 
   const handleCheckout = () => {
+    // Check if any cart items are out of stock or unavailable
+    const outOfStockItems = cartProducts.filter(
+      (product) => product.isOutOfStock
+    );
+
+    if (outOfStockItems.length > 0) {
+      alert(
+        `Cannot checkout: Some items are out of stock: ${outOfStockItems
+          .map((p) => p.name)
+          .join(", ")}`
+      );
+      return;
+    }
+
+    // Check if quantities exceed available stock
+    const insufficientStockItems = cartProducts.filter((product) => {
+      const qty = productQuantities[product.id] || 1;
+      return qty > product.stock;
+    });
+
+    if (insufficientStockItems.length > 0) {
+      alert(
+        `Cannot checkout: Insufficient stock for: ${insufficientStockItems
+          .map((p) => p.name)
+          .join(", ")}`
+      );
+      return;
+    }
+
     console.log("Proceeding to checkout");
     setOpen(false);
   };
@@ -121,10 +155,18 @@ const Cart = () => {
                 product.price -
                 (product.price * product.discountInPercent) / 100;
               const qty = productQuantities[product.id] || 1;
+              const isInsufficientStock = qty > product.stock;
+
               return (
                 <div
                   key={product.id}
-                  className="flex gap-3 p-3 border rounded-lg"
+                  className={`flex gap-3 p-3 border rounded-lg ${
+                    product.isOutOfStock
+                      ? "opacity-60 bg-red-50 border-red-200"
+                      : isInsufficientStock
+                      ? "bg-orange-50 border-orange-200"
+                      : ""
+                  }`}
                 >
                   <div className="relative w-16 h-16 rounded overflow-hidden flex-shrink-0">
                     <Image
@@ -133,6 +175,13 @@ const Cart = () => {
                       fill
                       className="object-cover"
                     />
+                    {product.isOutOfStock && (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                        <span className="text-white text-xs font-bold bg-red-600 px-2 py-1 rounded">
+                          Out of Stock
+                        </span>
+                      </div>
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <Link
@@ -146,6 +195,26 @@ const Cart = () => {
                       {product.category}{" "}
                       {product.class ? `(${product.class})` : ""}
                     </div>
+
+                    {/* Stock status indicators */}
+                    {product.isOutOfStock && (
+                      <div className="text-sm text-red-600 font-medium">
+                        Out of Stock
+                      </div>
+                    )}
+                    {isInsufficientStock && !product.isOutOfStock && (
+                      <div className="text-sm text-orange-600 font-medium">
+                        Only {product.stock} available
+                      </div>
+                    )}
+                    {product.isLowStock &&
+                      !product.isOutOfStock &&
+                      !isInsufficientStock && (
+                        <div className="text-sm text-orange-600">
+                          Low stock: {product.stock} left
+                        </div>
+                      )}
+
                     <div className="flex items-center justify-between mt-1">
                       <div className="font-medium">
                         {formatCurrency(discountPrice)}
@@ -155,7 +224,12 @@ const Cart = () => {
                           </span>
                         )}
                       </div>
-                      <ChangeItemQuantity id={product.id} quantity={qty} />
+                      <ChangeItemQuantity
+                        id={product.id}
+                        quantity={qty}
+                        maxStock={product.stock}
+                        disabled={product.isOutOfStock}
+                      />
                     </div>
                   </div>
                 </div>

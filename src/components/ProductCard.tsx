@@ -4,6 +4,8 @@ import { AddToCartButton, AddToWishlistButton } from "./CustomButtons";
 import RatingBar from "./RatingBar";
 import { formatCurrency } from "@/lib/formatter";
 import Link from "next/link";
+import TagBadge from "./TagBadge";
+import DiscountBadge from "./DiscountBadge";
 
 type ProductCardProps = {
   product: {
@@ -17,6 +19,10 @@ type ProductCardProps = {
     rating: number;
     noOfRating: number;
     imageUrl: string;
+    stock: number;
+    isAvailable: boolean;
+    isOutOfStock: boolean;
+    isLowStock: boolean;
   };
 };
 
@@ -26,17 +32,23 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <Card className="w-80 p-2 relative overflow-hidden shrink-0">
+      {" "}
       <CardHeader className="w-full aspect-square relative mx-auto rounded-md overflow-hidden">
-        {product.tag && (
-          <span className="absolute z-10 flex justify-center items-center font-semibold border border-accent-foreground top-2 left-2 text-accent-foreground text-sm px-4 py-1 rounded-sm">
-            {product.tag}
-          </span>
+        {/* Tag badge */}
+        {product.tag && <TagBadge tag={product.tag} />}
+
+        {/* Discount badge */}
+        <DiscountBadge discount={product.discountInPercent} />
+
+        {/* Out of stock overlay */}
+        {product.isOutOfStock && (
+          <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-20">
+            <div className="bg-white text-black px-4 py-2 rounded-md font-semibold text-sm shadow-lg">
+              Out of Stock
+            </div>
+          </div>
         )}
-        {product.discountInPercent > 0 && (
-          <span className="absolute z-10 flex justify-center items-center font-semibold top-2 right-2 border border-primary text-primary text-sm bg-white px-4 py-1 rounded-sm">
-            {product.discountInPercent}% OFF
-          </span>
-        )}
+
         <Link className="mb-26" href={`/products/${product.id}`}>
           <Image
             src={product.imageUrl}
@@ -73,9 +85,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
             </>
           )}
         </p>
+
         <div className="grid grid-cols-2 gap-2 mt-2 text-primary text-base">
           <AddToWishlistButton id={product.id} />
-          <AddToCartButton id={product.id} />
+          <AddToCartButton id={product.id} disabled={product.isOutOfStock} />
         </div>
       </CardFooter>
     </Card>

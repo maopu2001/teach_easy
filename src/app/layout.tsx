@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className="antialiased min-h-screen">
         <Header />
         <Toaster richColors position="bottom-left" closeButton theme="system" />
-        {children}
+        <main className="pb-5">{children}</main>
         <Footer />
       </body>
     </html>

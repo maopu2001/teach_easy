@@ -9,12 +9,19 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@/components/ui/carousel";
+import TagBadge from "@/components/TagBadge";
+import DiscountBadge from "@/components/DiscountBadge";
 
 interface ProductImageGalleryProps {
   product: {
     imageUrl: string;
     name: string;
     tag?: string;
+    discountInPercent?: number;
+    stock: number;
+    isAvailable: boolean;
+    isOutOfStock: boolean;
+    isLowStock: boolean;
   };
 }
 
@@ -39,7 +46,7 @@ export default function ProductImageGallery({
     };
 
     api.on("select", onSelect);
-    onSelect(); // Set initial state
+    onSelect();
 
     return () => {
       api.off("select", onSelect);
@@ -53,10 +60,9 @@ export default function ProductImageGallery({
           {images.map((image, index) => (
             <CarouselItem key={index}>
               <div className="relative aspect-square bg-muted rounded-xl flex items-center justify-center overflow-hidden">
-                {product.tag && index === 0 && (
-                  <span className="absolute top-4 left-4 bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400 text-xs font-semibold px-3 py-1 rounded-md shadow-sm z-10">
-                    {product.tag}
-                  </span>
+                {product.tag && <TagBadge tag={product.tag} />}
+                {product.discountInPercent && (
+                  <DiscountBadge discount={product.discountInPercent} />
                 )}
                 <Image
                   src={image}
@@ -96,7 +102,6 @@ export default function ProductImageGallery({
         )}
       </Carousel>
 
-      {/* Thumbnail gallery */}
       {images.length > 1 && (
         <div className="flex gap-2 mt-2">
           {images.map((image, index) => (

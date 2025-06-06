@@ -3,6 +3,15 @@ import { MAX_ITEMS, useCart } from "@/store/cartStore";
 import { Button } from "./ui/button";
 import { Heart, ShoppingCart } from "lucide-react";
 import { useWishlist } from "@/store/wishlistStore";
+import { Share2 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import { toast } from "sonner";
 
 export const BuyNowButton = ({ id }: { id: string }) => {
   const handleBuyNow = () => {
@@ -12,13 +21,20 @@ export const BuyNowButton = ({ id }: { id: string }) => {
   return <Button onClick={handleBuyNow}>Buy Now</Button>;
 };
 
-export const AddToCartButton = ({ id }: { id: string }) => {
+export const AddToCartButton = ({
+  id,
+  disabled = false,
+}: {
+  id: string;
+  disabled?: boolean;
+}) => {
   const { cart, addToCart } = useCart();
   const currentQuantity = cart.filter((item) => item === id).length;
   const isMaxReached = currentQuantity >= MAX_ITEMS;
+  const isDisabled = disabled || isMaxReached;
 
   const handleAddToCart = () => {
-    if (!isMaxReached) {
+    if (!isDisabled) {
       addToCart(id);
     }
   };
@@ -27,11 +43,17 @@ export const AddToCartButton = ({ id }: { id: string }) => {
     <Button
       className="w-full h-full bg-primary text-white hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
       onClick={handleAddToCart}
-      disabled={isMaxReached}
+      disabled={isDisabled}
     >
       <div className="flex items-center gap-2">
         <ShoppingCart className="size-5" />
-        <span>{isMaxReached ? `Max ${MAX_ITEMS} items` : "Add to Cart"}</span>
+        <span>
+          {disabled
+            ? "Out of Stock"
+            : isMaxReached
+            ? `Max ${MAX_ITEMS} items`
+            : "Add to Cart"}
+        </span>
       </div>
     </Button>
   );
@@ -71,9 +93,13 @@ export const AddToWishlistButton = ({ id }: { id: string }) => {
 export const ChangeItemQuantity = ({
   id,
   quantity,
+  maxStock = MAX_ITEMS,
+  disabled = false,
 }: {
   id: string;
   quantity: number;
+  maxStock?: number;
+  disabled?: boolean;
 }) => {
   const { addToCart, removeFromCart } = useCart();
 
@@ -86,6 +112,7 @@ export const ChangeItemQuantity = ({
         size="icon"
         className="h-7 w-7 px-0"
         onClick={() => removeFromCart(id)}
+        disabled={disabled}
         aria-label="Decrease quantity"
       >
         -
@@ -95,12 +122,51 @@ export const ChangeItemQuantity = ({
         variant="outline"
         size="icon"
         className="h-7 w-7 px-0"
-        disabled={quantity >= MAX_ITEMS}
+        disabled={disabled || quantity >= Math.min(MAX_ITEMS, maxStock)}
         onClick={() => addToCart(id)}
         aria-label="Increase quantity"
       >
         +
       </Button>
     </div>
+  );
+};
+
+export const ShareButton = () => {
+  const href = typeof window !== "undefined" ? window.location.href : "";
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(href);
+      toast.success("Link copied to clipboard");
+    } catch {
+      toast.error("Failed to copy link");
+    }
+  };
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="outline" className="w-full h-full">
+          <Share2 className="size-5" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Copy link to share</DialogTitle>
+        </DialogHeader>
+        <div className="w-full flex items-center gap-2 border px-3 py-2 rounded-md bg-muted">
+          <span className="flex-1 text-sm truncate">{href}</span>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleCopyLink}
+            className="shrink-0"
+          >
+            Copy
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };

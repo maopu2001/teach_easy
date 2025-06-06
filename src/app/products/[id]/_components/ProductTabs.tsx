@@ -2,7 +2,6 @@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Product } from "./ProductClientWrapper";
 
-
 export default function ProductTabs({
   product,
   keyFeatures,
@@ -10,6 +9,46 @@ export default function ProductTabs({
   product: Product;
   keyFeatures: string[];
 }) {
+  const DescriptionTab = () => {
+    return (
+      <div className="bg-card border rounded-xl p-8">
+        <h3 className="text-2xl font-bold mb-4">Product Description</h3>
+        <p className="mb-6 text-lg text-foreground">
+          {product.fullDescription}
+        </p>
+        <div>
+          <h4 className="font-bold mb-2">What&apos;s Included:</h4>
+          <ul className="space-y-2">
+            {keyFeatures.map((feature) => (
+              <li
+                key={feature}
+                className="flex items-center gap-2 text-green-600 dark:text-green-400 text-lg"
+              >
+                <span>✓</span> <span>{feature}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    );
+  };
+
+  const MaterialsTab = () => {
+    return (
+      <div className="bg-card border rounded-xl p-8 text-lg text-muted-foreground">
+        <p>Materials information coming soon.</p>
+      </div>
+    );
+  };
+
+  const ReviewsTab = () => {
+    return (
+      <div className="bg-card border rounded-xl p-8 text-lg text-muted-foreground">
+        <p>Reviews coming soon.</p>
+      </div>
+    );
+  };
+
   return (
     <div className="mt-12">
       <Tabs defaultValue="description" className="w-full">
@@ -35,37 +74,15 @@ export default function ProductTabs({
         </TabsList>
 
         <TabsContent value="description" className="mt-6">
-          <div className="bg-card border rounded-xl p-8">
-            <h3 className="text-2xl font-bold mb-4">Product Description</h3>
-            <p className="mb-6 text-lg text-foreground">
-              {product.description}
-            </p>
-            <div>
-              <h4 className="font-bold mb-2">What&apos;s Included:</h4>
-              <ul className="space-y-2">
-                {keyFeatures.map((feature) => (
-                  <li
-                    key={feature}
-                    className="flex items-center gap-2 text-green-600 dark:text-green-400 text-lg"
-                  >
-                    <span>✓</span> <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          <DescriptionTab />
         </TabsContent>
 
         <TabsContent value="materials" className="mt-6">
-          <div className="bg-card border rounded-xl p-8 text-lg text-muted-foreground">
-            <p>Materials information coming soon.</p>
-          </div>
+          <MaterialsTab />
         </TabsContent>
 
         <TabsContent value="reviews" className="mt-6">
-          <div className="bg-card border rounded-xl p-8 text-lg text-muted-foreground">
-            <p>Reviews coming soon.</p>
-          </div>
+          <ReviewsTab />
         </TabsContent>
       </Tabs>
     </div>

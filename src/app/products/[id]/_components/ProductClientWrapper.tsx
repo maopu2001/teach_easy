@@ -13,8 +13,14 @@ export type Product = {
   noOfRating: number;
   category: string;
   class?: string;
+  tag?: string;
   imageUrl: string;
   description: string;
+  fullDescription: string;
+  stock: number;
+  isAvailable: boolean;
+  isOutOfStock: boolean;
+  isLowStock: boolean;
 };
 
 interface ProductClientWrapperProps {

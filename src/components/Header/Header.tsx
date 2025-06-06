@@ -9,7 +9,7 @@ import Wishlist from "../Wishlist";
 
 const Header = () => {
   return (
-    <header className="sticky top-0 flex items-center px-4 h-24 backdrop-blur-sm bg-linear-to-b from-70% from-background to-background-0 z-10">
+    <header className="sticky top-0 flex items-center px-4 h-24 backdrop-blur-sm bg-linear-to-b from-70% from-background to-background-0 z-40">
       <Link href="/" className="flex items-center">
         <Image src="/logo.png" alt="Teach Easy" height={40} width={80} />
       </Link>

@@ -82,7 +82,7 @@ const SearchBar = ({ trigger }: { trigger: React.ReactNode }) => {
   return (
     <Dialog open={open} onOpenChange={handleDialogChange}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="p-4 pt-8 fixed top-1/5 w-full max-w-xl rounded-lg shadow-lg z-50">
+      <DialogContent className="translate-y-0 top-10 p-4 fixed w-full max-w-xl rounded-lg shadow-lg z-50">
         <DialogTitle>Search Products</DialogTitle>
         <div className="space-y-4">
           <div className="relative">

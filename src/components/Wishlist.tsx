@@ -21,6 +21,10 @@ type Product = {
   rating: number;
   noOfRating: number;
   imageUrl: string;
+  stock: number;
+  isAvailable: boolean;
+  isOutOfStock: boolean;
+  isLowStock: boolean;
 };
 
 const Wishlist = () => {
@@ -94,6 +98,7 @@ const Wishlist = () => {
               const discountPrice =
                 product.price -
                 (product.price * product.discountInPercent) / 100;
+
               return (
                 <div
                   key={product.id}
@@ -129,6 +134,19 @@ const Wishlist = () => {
                       {product.category}{" "}
                       {product.class ? `(${product.class})` : ""}
                     </div>
+
+                    {/* Stock status indicators */}
+                    {product.isOutOfStock && (
+                      <div className="text-sm text-red-600 font-medium mt-1">
+                        Out of Stock
+                      </div>
+                    )}
+                    {product.isLowStock && !product.isOutOfStock && (
+                      <div className="text-sm text-orange-600 mt-1">
+                        Low stock: {product.stock} left
+                      </div>
+                    )}
+
                     <div className="flex items-center justify-between mt-2">
                       <div className="font-medium">
                         {formatCurrency(discountPrice)}
@@ -141,13 +159,20 @@ const Wishlist = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="text-primary h-8 px-3"
+                        className={`h-8 px-3 ${
+                          product.isOutOfStock
+                            ? "text-muted-foreground cursor-not-allowed"
+                            : "text-primary hover:bg-primary/5"
+                        }`}
+                        disabled={product.isOutOfStock}
                         onClick={() => {
-                          addToCart(product.id);
+                          if (!product.isOutOfStock) {
+                            addToCart(product.id);
+                          }
                         }}
                       >
                         <ShoppingCart className="h-4 w-4 mr-2" />
-                        Add to Cart
+                        {product.isOutOfStock ? "Out of Stock" : "Add to Cart"}
                       </Button>
                     </div>
                   </div>
