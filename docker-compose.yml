@@ -1,0 +1,6 @@
+services:
+  nextjs-app:
+    build: .
+    ports:
+      - "3000:3000"
+    platform: linux/arm64 # or linux/arm64 if using M1/M2
