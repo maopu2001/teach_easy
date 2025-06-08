@@ -143,13 +143,12 @@ const Cart = ({ trigger }: CartProps = {}) => {
           </SheetTitle>
           {!isCartEmpty && (
             <Button
-              variant="ghost"
               size="sm"
               onClick={clearCart}
-              className="text-destructive hover:text-destructive hover:bg-destructive/10 p-2"
+              className="text-destructive bg-destructive/20 hover:text-destructive hover:bg-destructive/10 p-2"
             >
-              <Trash2 className="size-4" />
-              <span className="ml-2 hidden lg:block">Clear All</span>
+              <Trash2 className="size-4 mr-2" />
+              Clear All
             </Button>
           )}
         </SheetHeader>

@@ -17,6 +17,13 @@ const NavBar = ({ mobile = false, onItemClick }: NavBarProps) => {
   if (mobile) {
     return (
       <nav className="flex flex-col space-y-2">
+        <Link
+          href="/"
+          onClick={onItemClick}
+          className="block px-3 py-2 text-base font-medium text-foreground hover:text-primary hover:bg-accent rounded-md transition-colors"
+        >
+          Home
+        </Link>
         {navItems.map((item) => (
           <Link
             key={item.name}
