@@ -2,7 +2,6 @@
 
 import { useSearchParams } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
-import ActiveFilters from "@/app/products/_components/ActiveFilters";
 import { useMemo } from "react";
 
 type Product = {
@@ -75,8 +74,6 @@ export default function FilteredProducts({ products }: FilteredProductsProps) {
 
   return (
     <div className="flex-1">
-      <ActiveFilters />
-
       <div className="mb-4">
         <p className="text-sm text-muted-foreground">
           Showing {filteredAndSortedProducts.length} product

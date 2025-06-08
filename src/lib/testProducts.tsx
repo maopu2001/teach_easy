@@ -126,7 +126,6 @@ export const products = [
     rating: 4.8,
     noOfRating: 25,
     category: "Art",
-    class: "All Classes",
     tag: "Limited Edition",
     imageUrl: "/95443.png",
     description:

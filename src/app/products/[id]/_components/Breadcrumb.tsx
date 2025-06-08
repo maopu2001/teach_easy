@@ -34,7 +34,9 @@ export default function Breadcrumb({ product }: BreadcrumbProps) {
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <Link href="#">{product.category}</Link>
+              <Link href={`/products?category=${product.category}`}>
+                {product.category}
+              </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />

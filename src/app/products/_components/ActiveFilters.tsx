@@ -11,7 +11,6 @@ export default function ActiveFilters() {
 
   const selectedCategory = searchParams.get("category");
   const selectedClass = searchParams.get("class");
-  const searchQuery = searchParams.get("search");
   const selectedSort = searchParams.get("sort");
 
   const removeFilter = (key: string) => {
@@ -20,14 +19,7 @@ export default function ActiveFilters() {
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  const clearAllFilters = () => {
-    router.push(pathname);
-  };
-
-  const hasActiveFilters =
-    selectedCategory || selectedClass || searchQuery || selectedSort;
-
-  // if (!hasActiveFilters) return null;
+  const hasActiveFilters = selectedCategory || selectedClass || selectedSort;
 
   const getSortLabel = (sort: string) => {
     switch (sort) {
@@ -47,72 +39,48 @@ export default function ActiveFilters() {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2 mb-4 p-3 h-14 bg-muted/50 rounded-lg">
+    <div className="flex flex-col gap-2 mb-4 p-3 bg-muted/50 rounded-lg items-start">
       <span className="text-sm font-medium text-muted-foreground">
         Active filters:
       </span>
-
       {!hasActiveFilters && (
         <p className="text-sm text-muted-foreground">No active filters</p>
       )}
-
-      {searchQuery && (
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={() => removeFilter("search")}
-          className="h-7 px-2 text-xs gap-1"
-        >
-          Search: &quot;{searchQuery}&quot;
-          <X className="h-3 w-3" />
-        </Button>
-      )}
-
-      {selectedCategory && (
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={() => removeFilter("category")}
-          className="h-7 px-2 text-xs gap-1"
-        >
-          Category: {selectedCategory}
-          <X className="h-3 w-3" />
-        </Button>
-      )}
-
-      {selectedClass && (
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={() => removeFilter("class")}
-          className="h-7 px-2 text-xs gap-1"
-        >
-          Class: {selectedClass}
-          <X className="h-3 w-3" />
-        </Button>
-      )}
-
-      {selectedSort && selectedSort !== "name-asc" && (
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={() => removeFilter("sort")}
-          className="h-7 px-2 text-xs gap-1"
-        >
-          Sort: {getSortLabel(selectedSort)}
-          <X className="h-3 w-3" />
-        </Button>
-      )}
-      {hasActiveFilters && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={clearAllFilters}
-          className="h-7 px-2 text-xs text-muted-foreground hover:text-destructive"
-        >
-          Clear all
-        </Button>
-      )}
+      <div>
+        {selectedCategory && (
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => removeFilter("category")}
+            className="h-7 px-2 text-xs gap-1"
+          >
+            Category: {selectedCategory}
+            <X className="h-3 w-3" />
+          </Button>
+        )}
+        {selectedClass && (
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => removeFilter("class")}
+            className="h-7 px-2 text-xs gap-1"
+          >
+            Class: {selectedClass}
+            <X className="h-3 w-3" />
+          </Button>
+        )}
+        {selectedSort && selectedSort !== "name-asc" && (
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => removeFilter("sort")}
+            className="h-7 px-2 text-xs gap-1"
+          >
+            Sort: {getSortLabel(selectedSort)}
+            <X className="h-3 w-3" />
+          </Button>
+        )}
+      </div>
     </div>
   );
 }

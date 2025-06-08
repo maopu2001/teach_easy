@@ -8,7 +8,13 @@ import { products } from "@/lib/testProducts";
 import { formatCurrency } from "@/lib/formatter";
 import Image from "next/image";
 import Link from "next/link";
-import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "./ui/drawer";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
 
 type Product = {
   id: string;
@@ -27,7 +33,11 @@ type Product = {
   isLowStock: boolean;
 };
 
-const Wishlist = () => {
+interface WishlistProps {
+  trigger?: React.ReactNode;
+}
+
+const Wishlist = ({ trigger }: WishlistProps = {}) => {
   const { items, removeFromWishlist, clearWishlist } = useWishlist();
   const { addToCart } = useCart();
   const [wishlistProducts, setWishlistProducts] = useState<Product[]>([]);
@@ -45,39 +55,44 @@ const Wishlist = () => {
 
   const isWishlistEmpty = items.length === 0;
 
+  const defaultTrigger = (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="relative"
+      aria-label="Open wishlist"
+    >
+      <Heart className="h-6 w-6" />
+      {!isWishlistEmpty && (
+        <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs rounded-full bg-primary text-primary-foreground">
+          {items.length}
+        </span>
+      )}
+    </Button>
+  );
+
   return (
-    <Drawer open={open} onOpenChange={setOpen} direction="right">
-      <DrawerTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative"
-          aria-label="Open wishlist"
-        >
-          <Heart className="h-6 w-6" />
-          {!isWishlistEmpty && (
-            <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs rounded-full bg-primary text-primary-foreground">
-              {items.length}
-            </span>
-          )}
-        </Button>
-      </DrawerTrigger>
-      <DrawerContent className="sm:max-w-md w-full max-w-[400px] ml-auto h-full flex flex-col">
-        <DrawerTitle className="flex justify-between items-center px-6 pt-6 pb-2 border-b">
-          <span className="text-lg font-semibold">My Wishlist</span>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>{trigger || defaultTrigger}</SheetTrigger>
+      <SheetContent
+        side="right"
+        className="sm:max-w-md w-[90vw] max-w-[400px] h-full flex flex-col p-0"
+      >
+        <SheetHeader className="flex flex-row justify-between items-center px-6 pt-6 pb-2 border-b">
+          <SheetTitle className="text-lg font-semibold">My Wishlist</SheetTitle>
           {!isWishlistEmpty && (
             <Button
               variant="ghost"
               size="sm"
               onClick={clearWishlist}
-              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+              className="text-destructive hover:text-destructive hover:bg-destructive/10 p-2"
             >
-              <Trash2 className="w-4 h-4 mr-2" />
-              Clear All
+              <Trash2 className="size-4" />
+              <span className="ml-2 hidden lg:block">Clear All</span>
             </Button>
           )}
-        </DrawerTitle>
-        <div className="flex-1 mt-4 space-y-4 max-h-[60vh] overflow-auto pr-1 px-6">
+        </SheetHeader>
+        <div className="flex-1 space-y-4 overflow-auto mb-4 px-6">
           {isWishlistEmpty ? (
             <div className="text-center py-8">
               <div className="flex justify-center mb-4">
@@ -86,7 +101,7 @@ const Wishlist = () => {
               <h3 className="font-medium text-lg mb-2">
                 Your wishlist is empty
               </h3>
-              <p className="text-muted-foreground mb-4">
+              <p className="text-muted-foreground mb-4 text-wrap">
                 Add items to your wishlist to save them for later
               </p>
               <Button onClick={() => setOpen(false)} asChild>
@@ -104,7 +119,7 @@ const Wishlist = () => {
                   key={product.id}
                   className="flex gap-3 p-3 border rounded-lg"
                 >
-                  <div className="relative w-16 h-16 rounded overflow-hidden flex-shrink-0">
+                  <div className="relative size-16 rounded overflow-hidden flex-shrink-0">
                     <Image
                       src={product.imageUrl}
                       alt={product.name}
@@ -181,8 +196,8 @@ const Wishlist = () => {
             })
           )}
         </div>
-      </DrawerContent>
-    </Drawer>
+      </SheetContent>
+    </Sheet>
   );
 };
 

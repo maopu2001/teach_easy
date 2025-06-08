@@ -1,7 +1,6 @@
 "use client";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -9,8 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search } from "lucide-react";
-import { useState } from "react";
+import ActiveFilters from "./ActiveFilters";
 
 interface ProductFilterProps {
   categories: string[];
@@ -24,7 +22,6 @@ export default function ProductFilter({
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const [searchQuery, setSearchQuery] = useState("");
 
   const selectedCategory = searchParams.get("category");
   const selectedClass = searchParams.get("class");
@@ -42,50 +39,17 @@ export default function ProductFilter({
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  const updateSearch = (query: string) => {
-    const params = new URLSearchParams(searchParams);
-
-    if (query.trim()) {
-      params.set("search", query);
-    } else {
-      params.delete("search");
-    }
-
-    router.push(`${pathname}?${params.toString()}`);
-  };
-
   const clearAllFilters = () => {
-    setSearchQuery("");
     router.push(pathname);
   };
 
   const hasActiveFilters =
     selectedCategory || selectedClass || searchParams.get("search");
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    updateSearch(searchQuery);
-  };
-
   return (
-    <div className="w-full lg:w-64 space-y-6 lg:sticky lg:top-4">
-      {/* Search Products */}
+    <div className="w-full lg:w-64 space-y-4 lg:sticky lg:top-24 p-4">
       <div>
-        <h3 className="text-lg font-semibold mb-4">Search Products</h3>
-        <form onSubmit={handleSearchSubmit} className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
-            type="text"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
-        </form>
-      </div>
-
-      <div>
-        <h3 className="text-lg font-semibold mb-4">Category</h3>
+        <h3 className="text-lg font-semibold mb-2">Category</h3>
         <Select
           value={selectedCategory || "all"}
           onValueChange={(value) => updateFilter("category", value)}
@@ -105,16 +69,16 @@ export default function ProductFilter({
       </div>
 
       <div>
-        <h3 className="text-lg font-semibold mb-4">Grade Level</h3>
+        <h3 className="text-lg font-semibold mb-2">Class</h3>
         <Select
           value={selectedClass || "all"}
           onValueChange={(value) => updateFilter("class", value)}
         >
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="All Grades" />
+            <SelectValue placeholder="All Classes" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Grades</SelectItem>
+            <SelectItem value="all">All Classes</SelectItem>
             {classes.map((classLevel) => (
               <SelectItem key={classLevel} value={classLevel}>
                 {classLevel}
@@ -125,7 +89,7 @@ export default function ProductFilter({
       </div>
 
       <div>
-        <h3 className="text-lg font-semibold mb-4">Sort By</h3>
+        <h3 className="text-lg font-semibold mb-2">Sort By</h3>
         <Select
           value={selectedSort}
           onValueChange={(value) => updateFilter("sort", value)}
@@ -143,11 +107,17 @@ export default function ProductFilter({
         </Select>
       </div>
 
-      {/* Clear All Filters */}
       {hasActiveFilters && (
-        <Button variant="outline" onClick={clearAllFilters} className="w-full">
-          Clear All Filters
-        </Button>
+        <>
+          <Button
+            variant="outline"
+            onClick={clearAllFilters}
+            className="w-full"
+          >
+            Clear All Filters
+          </Button>
+          <ActiveFilters />
+        </>
       )}
     </div>
   );

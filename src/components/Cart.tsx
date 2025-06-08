@@ -7,7 +7,14 @@ import { products } from "@/lib/testProducts";
 import { formatCurrency } from "@/lib/formatter";
 import Image from "next/image";
 import Link from "next/link";
-import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "./ui/drawer";
+import {
+  Sheet,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
 import { ChangeItemQuantity } from "./CustomButtons";
 
 type Product = {
@@ -27,7 +34,11 @@ type Product = {
   isLowStock: boolean;
 };
 
-const Cart = () => {
+interface CartProps {
+  trigger?: React.ReactNode;
+}
+
+const Cart = ({ trigger }: CartProps = {}) => {
   const { cart, clearCart } = useCart();
   const [open, setOpen] = useState(false);
 
@@ -103,39 +114,46 @@ const Cart = () => {
 
   const isCartEmpty = cart.length === 0;
 
+  const defaultTrigger = (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="relative"
+      aria-label="Open cart"
+    >
+      <ShoppingCart className="h-6 w-6" />
+      {!isCartEmpty && (
+        <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs rounded-full bg-primary text-primary-foreground">
+          {cart.length}
+        </span>
+      )}
+    </Button>
+  );
+
   return (
-    <Drawer open={open} onOpenChange={setOpen} direction="right">
-      <DrawerTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative"
-          aria-label="Open cart"
-        >
-          <ShoppingCart className="h-6 w-6" />
-          {!isCartEmpty && (
-            <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs rounded-full bg-primary text-primary-foreground">
-              {cart.length}
-            </span>
-          )}
-        </Button>
-      </DrawerTrigger>
-      <DrawerContent className="sm:max-w-md w-full max-w-[400px] ml-auto h-full flex flex-col">
-        <DrawerTitle className="flex justify-between items-center px-6 pt-6 pb-2 border-b">
-          <span className="text-lg font-semibold">Shopping Cart</span>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>{trigger || defaultTrigger}</SheetTrigger>
+      <SheetContent
+        side="right"
+        className="sm:max-w-md w-[90vw] max-w-[400px] h-full flex flex-col p-0"
+      >
+        <SheetHeader className="flex flex-row justify-between items-center px-6 pt-6 pb-2 border-b">
+          <SheetTitle className="text-lg font-semibold">
+            Shopping Cart
+          </SheetTitle>
           {!isCartEmpty && (
             <Button
               variant="ghost"
               size="sm"
               onClick={clearCart}
-              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+              className="text-destructive hover:text-destructive hover:bg-destructive/10 p-2"
             >
-              <Trash2 className="w-4 h-4 mr-2" />
-              Clear All
+              <Trash2 className="size-4" />
+              <span className="ml-2 hidden lg:block">Clear All</span>
             </Button>
           )}
-        </DrawerTitle>
-        <div className="flex-1 mt-4 space-y-4 max-h-[60vh] overflow-auto pr-1 px-6">
+        </SheetHeader>
+        <div className="flex-1 space-y-4 overflow-auto px-6">
           {isCartEmpty ? (
             <div className="text-center py-8">
               <div className="flex justify-center mb-4">
@@ -237,38 +255,42 @@ const Cart = () => {
             })
           )}
         </div>
+
         {!isCartEmpty && (
-          <div className="mt-6 space-y-4 px-6 pb-6">
-            <div className="flex justify-between items-center pt-4 border-t">
-              <span className="font-medium">Total:</span>
-              <span className="text-xl font-semibold">
-                {formatCurrency(calculateTotal())}
-              </span>
-            </div>
-            {calculateTotalSaved() > 0 && (
-              <div className="flex justify-between items-center text-green-600 text-sm">
-                <span className="font-medium">Total Saved:</span>
-                <span className="font-semibold">
-                  {formatCurrency(calculateTotalSaved())}
+          <SheetFooter>
+            <div className="space-y-4 px-6 pb-6">
+              <div className="flex justify-between items-center pt-4 border-t">
+                <span className="font-medium">Total:</span>
+                <span className="text-xl font-semibold">
+                  {formatCurrency(calculateTotal())}
                 </span>
               </div>
-            )}
-            <div className="flex gap-3">
-              <Button
-                className="flex-1"
-                variant="outline"
-                onClick={() => setOpen(false)}
-              >
-                Continue Shopping
-              </Button>
-              <Button className="flex-1" onClick={handleCheckout}>
-                Checkout
-              </Button>
+              {calculateTotalSaved() > 0 && (
+                <div className="flex justify-between items-center text-green-600 text-sm">
+                  <span className="font-medium">Total Saved:</span>
+                  <span className="font-semibold">
+                    {formatCurrency(calculateTotalSaved())}
+                  </span>
+                </div>
+              )}
+
+              <div className="flex gap-3">
+                <Button
+                  className="flex-1"
+                  variant="outline"
+                  onClick={() => setOpen(false)}
+                >
+                  Continue Shopping
+                </Button>
+                <Button className="flex-1" onClick={handleCheckout}>
+                  Checkout
+                </Button>
+              </div>
             </div>
-          </div>
+          </SheetFooter>
         )}
-      </DrawerContent>
-    </Drawer>
+      </SheetContent>
+    </Sheet>
   );
 };
 

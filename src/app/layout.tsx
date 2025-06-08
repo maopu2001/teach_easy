@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header/Header";
-import Footer from "@/components/Footer";
+import MobileBottomNavigation from "@/components/MobileBottomNavigation";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
@@ -24,8 +24,8 @@ export default function RootLayout({
       <body className="antialiased min-h-screen">
         <Header />
         <Toaster richColors position="bottom-left" closeButton theme="system" />
-        <main className="pb-5">{children}</main>
-        <Footer />
+        <main className="pb-20 md:pb-5">{children}</main>
+        <MobileBottomNavigation />
       </body>
     </html>
   );
