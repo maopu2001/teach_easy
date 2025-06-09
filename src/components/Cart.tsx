@@ -108,7 +108,8 @@ const Cart = ({ trigger }: CartProps = {}) => {
       return;
     }
 
-    console.log("Proceeding to checkout");
+    // Navigate to checkout page
+    window.location.href = "/checkout";
     setOpen(false);
   };
 

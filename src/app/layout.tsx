@@ -24,8 +24,8 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased min-h-screen">
         <Header />
-        <Toaster richColors position="bottom-left" closeButton theme="system" />
-        <main className="pb-20 md:pb-5">{children}</main>
+        <Toaster richColors duration={1000} position="top-center" closeButton theme="system" />
+        <main>{children}</main>
         <Footer />
         <MobileBottomNavigation />
       </body>

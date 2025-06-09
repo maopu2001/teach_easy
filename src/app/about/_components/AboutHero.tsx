@@ -5,7 +5,7 @@ export default function AboutHero() {
     <SectionWrapper>
       <div className="text-center space-y-6">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground">
-          About <span className="text-primary">TeachEasy</span>
+          About <span className="text-primary">Teach Easy</span>
         </h1>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
           We&apos;re passionate about empowering educators with high-quality
