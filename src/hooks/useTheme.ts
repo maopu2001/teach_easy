@@ -7,10 +7,6 @@ const useTheme = (initialValue?: string) => {
   useEffect(() => {
     const saved = localStorage.getItem("theme");
     if (saved) setTheme(saved);
-    // else {
-    //   if (window.matchMedia("(prefers-color-scheme: dark)").matches)
-    //     setTheme("dark");
-    // }
   }, []);
 
   useEffect(() => {

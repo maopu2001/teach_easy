@@ -10,14 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { products } from "@/lib/testProducts";
 import { formatCurrency } from "@/lib/formatter";
-
-type Product = {
-  id: string;
-  name: string;
-  category: string;
-  class?: string;
-  price: number;
-};
+import { Product } from "@/app/products/[id]/_components/ProductClientWrapper";
 
 const SearchBar = ({ trigger }: { trigger: React.ReactNode }) => {
   const [open, setOpen] = useState(false);
@@ -82,7 +75,7 @@ const SearchBar = ({ trigger }: { trigger: React.ReactNode }) => {
   return (
     <Dialog open={open} onOpenChange={handleDialogChange}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="translate-y-0 top-10 p-4 fixed w-full max-w-xl rounded-lg shadow-lg z-50">
+      <DialogContent className="translate-y-0 top-10 p-4 fixed w-[95%] max-w-xl rounded-lg shadow-lg z-50">
         <DialogTitle>Search Products</DialogTitle>
         <div className="space-y-4">
           <div className="relative">
@@ -141,8 +134,26 @@ const SearchBar = ({ trigger }: { trigger: React.ReactNode }) => {
                         {product.class ? ` (${product.class})` : ""}
                       </span>
                     </div>
-                    <span className="text-sm font-medium">
-                      {formatCurrency(product.price)}
+                    <span className="text-sm text-right font-medium">
+                      {product.discountInPercent > 0 ? (
+                        <>
+                          {formatCurrency(
+                            product.price -
+                              (product.price * product.discountInPercent) / 100
+                          )}
+                          <br />
+                          <div className="ml-2 text-xs text-muted-foreground">
+                            <span className="line-through">
+                              {formatCurrency(product.price)}
+                            </span>{" "}
+                            <span className="text-green-600 dark:text-green-400">
+                              -{product.discountInPercent}%
+                            </span>
+                          </div>
+                        </>
+                      ) : (
+                        formatCurrency(product.price)
+                      )}
                     </span>
                   </div>
                 ))}

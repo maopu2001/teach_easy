@@ -1,10 +1,12 @@
+"use client";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { usePathname } from "next/navigation";
 
 const navItems = [
+  { name: "Home", path: "/" },
   { name: "Products", path: "/products" },
   { name: "About", path: "/about" },
-  { name: "Reviews", path: "/reviews" },
   { name: "Contact", path: "/contact" },
 ];
 
@@ -14,6 +16,7 @@ interface NavBarProps {
 }
 
 const NavBar = ({ mobile = false, onItemClick }: NavBarProps) => {
+  const pathname = usePathname();
   if (mobile) {
     return (
       <nav className="flex flex-col space-y-2">
@@ -39,9 +42,17 @@ const NavBar = ({ mobile = false, onItemClick }: NavBarProps) => {
   }
 
   return (
-    <nav className="flex space-x-2">
+    <nav className="flex space-x-2 ml-5 justify-center items-center">
       {navItems.map((item) => (
-        <Button key={item.name} variant="link">
+        <Button
+          className={`${
+            item.path === pathname
+              ? "bg-primary text-background"
+              : "text-primary"
+          } w-20 border-2 border-primary/70 hover:border-accent-foreground`}
+          key={item.name}
+          variant="ghost"
+        >
           <Link href={item.path}>{item.name}</Link>
         </Button>
       ))}

@@ -33,7 +33,7 @@ export default function ProductInfo({
             <span className="line-through text-muted-foreground">
               {formatCurrency(product.price)}
             </span>
-            <span className="bg-red-100 text-red-500 text-xs font-semibold px-2 py-1 rounded">
+            <span className="bg-red-100 text-primary text-xs font-semibold px-2 py-1 rounded">
               Save {formatCurrency(saved)}
             </span>
           </>

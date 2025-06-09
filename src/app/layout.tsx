@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header/Header";
 import MobileBottomNavigation from "@/components/MobileBottomNavigation";
 import { Toaster } from "sonner";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Teach Easy",
@@ -25,6 +26,7 @@ export default function RootLayout({
         <Header />
         <Toaster richColors position="bottom-left" closeButton theme="system" />
         <main className="pb-20 md:pb-5">{children}</main>
+        <Footer />
         <MobileBottomNavigation />
       </body>
     </html>

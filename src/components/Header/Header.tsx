@@ -22,8 +22,8 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 flex items-center justify-between px-4 h-16 md:h-24 backdrop-blur-sm bg-background/90 z-40">
-      {/* eft */}
+    <header className="sticky top-0 flex items-center justify-between px-4 h-16 md:h-20 backdrop-blur-sm bg-background/90 z-40">
+      {/* Left */}
       <div className="flex items-center">
         {/* Logo  */}
         <Link

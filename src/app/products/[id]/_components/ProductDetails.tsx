@@ -24,7 +24,7 @@ export default function ProductDetails({
             <p className="text-red-600 dark:text-red-400 font-medium">
               ❌ Out of Stock
             </p>
-            <p className="text-sm text-red-500 dark:text-red-400 mt-1">
+            <p className="text-sm text-primary dark:text-red-400 mt-1">
               This item is currently unavailable
             </p>
           </div>
@@ -51,10 +51,7 @@ export default function ProductDetails({
         disabled={product.isOutOfStock}
         maxStock={product.stock}
       />
-      <ProductActions
-        productId={product.id}
-        disabled={product.isOutOfStock}
-      />
+      <ProductActions productId={product.id} disabled={product.isOutOfStock} />
       <ProductInfoSection />
     </div>
   );

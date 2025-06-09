@@ -1,10 +1,5 @@
-const HomePage = () => {
-  return (
-    <div>
-      <h1>Welcome to the Home Page</h1>
-      <p>This is the main page of the application.</p>
-    </div>
-  );
-};
+import HomePage from "./_components/HomePage";
 
-export default HomePage;
+export default function Page() {
+  return <HomePage />;
+}
