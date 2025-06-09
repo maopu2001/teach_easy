@@ -25,7 +25,7 @@ export default function OrderSummary({
   total,
 }: OrderSummaryProps) {
   return (
-    <Card className="sticky top-24">
+    <Card className="lg:sticky top-24">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <ShoppingBag className="w-5 h-5" />

@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Control } from "react-hook-form";
-import { Truck, Clock, Zap } from "lucide-react";
+import { Truck, Clock, ShoppingBag } from "lucide-react";
 import { ShippingFormData } from "@/lib/checkout-schemas";
 
 interface ShippingMethodSelectorProps {
@@ -23,22 +23,22 @@ export default function ShippingMethodSelector({
       id: "standard",
       name: "Standard Shipping",
       description: "5-7 business days",
-      price: "৳59",
+      price: 59,
       icon: Truck,
     },
     {
       id: "express",
       name: "Express Shipping",
       description: "2-3 business days",
-      price: "৳149",
+      price: 149,
       icon: Clock,
     },
     {
-      id: "overnight",
-      name: "Overnight Shipping",
+      id: "pickup",
+      name: "Pickup from Store",
       description: "1 business day",
-      price: "৳299",
-      icon: Zap,
+      price: 0,
+      icon: ShoppingBag,
     },
   ];
 
@@ -64,13 +64,13 @@ export default function ShippingMethodSelector({
                       }`}
                       onClick={() => field.onChange(option.id)}
                     >
-                      <CardContent className="flex items-center justify-between p-2 h-full">
-                        <div className="flex items-center space-x-2">
+                      <CardContent className="flex items-center justify-between px-4 py-2 h-full">
+                        <div className="flex items-center space-x-2 mr-2">
                           <input
                             type="radio"
                             checked={field.value === option.id}
                             onChange={() => field.onChange(option.id)}
-                            className="h-3 w-3"
+                            className="hidden"
                           />
                           <Icon className="h-4 w-4 text-muted-foreground" />
                         </div>
@@ -83,7 +83,7 @@ export default function ShippingMethodSelector({
                           </p>
                         </div>
                         <p className="font-semibold text-sm whitespace-nowrap">
-                          {option.price}
+                          {option.price}৳
                         </p>
                       </CardContent>
                     </Card>

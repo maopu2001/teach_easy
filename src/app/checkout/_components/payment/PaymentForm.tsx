@@ -26,7 +26,9 @@ const paymentFormSchema = z
     // Mobile payment fields (conditional)
     mobileNumber: z.string().optional(),
     // Terms acceptance
-    agreeToTerms: z.boolean(),
+    agreeToTerms: z.boolean().refine((val) => val === true, {
+      message: "You must agree to the terms and conditions",
+    }),
   })
   .refine(
     (data) => {

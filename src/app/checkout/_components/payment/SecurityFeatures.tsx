@@ -14,7 +14,6 @@ export default function SecurityFeatures() {
       <ul className="text-xs text-green-600 dark:text-green-400 space-y-1">
         <li>• SSL encrypted payment processing</li>
         <li>• 30-day money-back guarantee</li>
-        <li>• PCI DSS compliant payment gateway</li>
       </ul>
     </div>
   );

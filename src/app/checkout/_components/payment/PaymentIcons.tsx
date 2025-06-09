@@ -19,7 +19,7 @@ export const COD = () => {
     <Image
       className="mx-auto"
       height={80}
-      width={120}
+      width={80}
       src="/icons/cod.png"
       alt="Cash on Delivery"
     />

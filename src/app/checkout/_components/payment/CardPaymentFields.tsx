@@ -18,7 +18,7 @@ interface CardPaymentFieldsProps {
 
 export default function CardPaymentFields({ control }: CardPaymentFieldsProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 max-w-150">
       <div className="flex items-center space-x-2 text-sm text-muted-foreground">
         <Shield className="h-4 w-4" />
         <span>Your payment information is secure and encrypted</span>

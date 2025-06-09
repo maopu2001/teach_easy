@@ -28,13 +28,19 @@ export default function TermsAndConditions({
             <Checkbox checked={field.value} onCheckedChange={field.onChange} />
           </FormControl>
           <div className="space-y-1 leading-none">
-            <FormLabel className="text-sm font-normal">
-              I agree to the{" "}
-              <a href="/terms" className="text-primary hover:underline">
+            <FormLabel className="text-sm font-normal inline-flex flex-wrap">
+              <span className="text-nowrap">I agree to the </span>
+              <a
+                href="/terms"
+                className="text-primary hover:underline text-nowrap"
+              >
                 Terms and Conditions
-              </a>{" "}
-              and{" "}
-              <a href="/privacy" className="text-primary hover:underline">
+              </a>
+              <span className="text-nowrap"> and </span>
+              <a
+                href="/privacy"
+                className="text-primary hover:underline text-nowrap"
+              >
                 Privacy Policy
               </a>
             </FormLabel>

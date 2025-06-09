@@ -28,9 +28,14 @@ interface BillingFormProps {
   defaultValues?: Partial<BillingFormData>;
 }
 
-export default function BillingForm({ onSubmit, defaultValues }: BillingFormProps) {
-  const [selectedDivision, setSelectedDivision] = useState<string>(defaultValues?.state || "");
-  
+export default function BillingForm({
+  onSubmit,
+  defaultValues,
+}: BillingFormProps) {
+  const [selectedDivision, setSelectedDivision] = useState<string>(
+    defaultValues?.state || ""
+  );
+
   const form = useForm<BillingFormData>({
     resolver: zodResolver(billingSchema),
     defaultValues: {
@@ -47,7 +52,9 @@ export default function BillingForm({ onSubmit, defaultValues }: BillingFormProp
   });
 
   const divisions = Object.keys(districts);
-  const availableDistricts = selectedDivision ? districts[selectedDivision as keyof typeof districts] : [];
+  const availableDistricts = selectedDivision
+    ? districts[selectedDivision as keyof typeof districts]
+    : [];
 
   const handleDivisionChange = (division: string) => {
     setSelectedDivision(division);
@@ -142,7 +149,7 @@ export default function BillingForm({ onSubmit, defaultValues }: BillingFormProp
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select division" />
                       </SelectTrigger>
                     </FormControl>
@@ -170,7 +177,7 @@ export default function BillingForm({ onSubmit, defaultValues }: BillingFormProp
                     disabled={!selectedDivision}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select district" />
                       </SelectTrigger>
                     </FormControl>
@@ -210,18 +217,12 @@ export default function BillingForm({ onSubmit, defaultValues }: BillingFormProp
                     defaultValue={field.value}
                   >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select country" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent defaultValue="BD">
                       <SelectItem value="BD">Bangladesh</SelectItem>
-                      <SelectItem value="IN">India</SelectItem>
-                      <SelectItem value="PK">Pakistan</SelectItem>
-                      <SelectItem value="US">United States</SelectItem>
-                      <SelectItem value="GB">United Kingdom</SelectItem>
-                      <SelectItem value="CA">Canada</SelectItem>
-                      <SelectItem value="AU">Australia</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

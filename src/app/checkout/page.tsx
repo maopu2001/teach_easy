@@ -145,7 +145,7 @@ export default function CheckoutPage() {
 
       <div className="grid lg:grid-cols-3 gap-8 mt-8">
         {/* Checkout Form */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 order-2 lg:order-1">
           <CheckoutForm
             currentStep={currentStep}
             onStepComplete={handleStepComplete}
@@ -156,7 +156,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* Order Summary */}
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 order-1 lg:order-2">
           <OrderSummary
             cartProducts={cartProducts}
             productQuantities={productQuantities}
