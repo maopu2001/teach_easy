@@ -1,8 +1,8 @@
 import { Card, CardDescription, CardHeader } from "@/components/ui/card";
 import { Star } from "lucide-react";
 import Image from "next/image";
-import SectionWrapper from "./shared/SectionWrapper";
-import SectionHeader from "./shared/SectionHeader";
+import SectionWrapper from "../../components/SectionWrapper";
+import SectionHeader from "../../components/SectionHeader";
 
 const testimonials = [
   {

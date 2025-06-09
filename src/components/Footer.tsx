@@ -19,25 +19,25 @@ export default function Footer() {
           <nav className="flex flex-wrap justify-center sm:justify-end gap-4">
             <Link
               href="/terms"
-              className="text-xs hover:underline text-muted-foreground hover:text-primary dark:hover:text-red-400"
+              className="text-xs hover:underline text-muted-foreground hover:text-primary"
             >
               Terms of Service
             </Link>
             <Link
               href="/privacy"
-              className="text-xs hover:underline text-muted-foreground hover:text-primary dark:hover:text-red-400"
+              className="text-xs hover:underline text-muted-foreground hover:text-primary"
             >
               Privacy Policy
             </Link>
             <Link
               href="/shipping"
-              className="text-xs hover:underline text-muted-foreground hover:text-primary dark:hover:text-red-400"
+              className="text-xs hover:underline text-muted-foreground hover:text-primary"
             >
               Shipping Info
             </Link>
             <Link
               href="/returns"
-              className="text-xs hover:underline text-muted-foreground hover:text-primary dark:hover:text-red-400"
+              className="text-xs hover:underline text-muted-foreground hover:text-primary"
             >
               Returns
             </Link>

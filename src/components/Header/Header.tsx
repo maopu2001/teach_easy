@@ -61,7 +61,7 @@ const Header = () => {
               <SheetHeader>
                 <SheetTitle></SheetTitle>
               </SheetHeader>
-              <div className="mt-6 pl-5 space-y-4">
+              <div className="mt-6 px-5 space-y-4">
                 <NavBar mobile onItemClick={() => setMobileMenuOpen(false)} />
                 <ThemeChanger variant="text" />
               </div>

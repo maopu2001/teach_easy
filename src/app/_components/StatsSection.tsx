@@ -1,9 +1,9 @@
-import SectionWrapper from "./shared/SectionWrapper";
+import SectionWrapper from "../../components/SectionWrapper";
 import AnimatedCounter from "./AnimatedCounter";
 
 const stats = [
   { from: 0, to: 10000, suffix: "+", label: "Happy Teachers" },
-  { from: 0, to: 50000, suffix: "+", label: "Resources Available" },
+  { from: 0, to: 50000, suffix: "+", label: "Products Sold" },
   { from: 0, to: 1000000, suffix: "+", label: "Students Impacted" },
   { from: 0, to: 4.9, suffix: "/5", label: "Average Rating" },
 ];

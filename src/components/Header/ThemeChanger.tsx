@@ -15,13 +15,11 @@ const ThemeChanger = ({ variant }: ThemeChangerProps = {}) => {
     return (
       <Button
         variant="outline"
-        className="flex bg-accent items-center gap-2 w-fit px-3 py-2 text-base font-medium text-foreground rounded-md transition-colors"
+        className="flex bg-accent items-center gap-2 w-full px-3 py-2 text-base font-medium text-foreground rounded-md transition-colors"
         onClick={changeTheme}
       >
-        <span className="">
-          {theme === "dark" ? "Light Mode" : "Dark Mode"}
-        </span>
-        <span>{theme === "dark" ? <Sun id="sun" /> : <Moon id="moon" />}</span>
+        {theme === "dark" ? "Light Mode" : "Dark Mode"}
+        {theme === "dark" ? <Sun id="sun" /> : <Moon id="moon" />}
       </Button>
     );
   }

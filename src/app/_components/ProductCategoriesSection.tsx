@@ -7,8 +7,8 @@ import {
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import SectionWrapper from "./shared/SectionWrapper";
-import SectionHeader from "./shared/SectionHeader";
+import SectionWrapper from "../../components/SectionWrapper";
+import SectionHeader from "../../components/SectionHeader";
 
 const categories = [
   {
@@ -51,7 +51,7 @@ export default function ProductCategoriesSection() {
                 alt={category.title}
                 className="w-full h-48 object-cover rounded-lg"
               />
-              <CardTitle className="group-hover:text-primary dark:group-hover:text-red-400 transition-colors">
+              <CardTitle className="group-hover:text-primary transition-colors">
                 {category.title}
               </CardTitle>
               <CardDescription className="text-sm">

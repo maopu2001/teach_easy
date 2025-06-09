@@ -1,7 +1,7 @@
 import { Lightbulb, Target, Users } from "lucide-react";
-import SectionWrapper from "./shared/SectionWrapper";
-import SectionHeader from "./shared/SectionHeader";
-import FeatureCard from "./shared/FeatureCard";
+import SectionWrapper from "../../components/SectionWrapper";
+import SectionHeader from "../../components/SectionHeader";
+import FeatureCard from "../../components/FeatureCard";
 
 const features = [
   {

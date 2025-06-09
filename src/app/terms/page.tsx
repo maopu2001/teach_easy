@@ -1,5 +1,5 @@
-import SectionHeader from "../_components/shared/SectionHeader";
-import SectionWrapper from "../_components/shared/SectionWrapper";
+import SectionHeader from "../../components/SectionHeader";
+import SectionWrapper from "../../components/SectionWrapper";
 
 export default function TermsOfServicePage() {
   return (

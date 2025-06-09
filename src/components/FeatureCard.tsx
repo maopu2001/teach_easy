@@ -1,6 +1,6 @@
 import {
   Card,
-  CardHeader,
+  CardContent,
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
@@ -18,12 +18,12 @@ export default function FeatureCard({
   description,
 }: FeatureCardProps) {
   return (
-    <Card className="border-2 hover:border-red-200 dark:hover:border-red-800 transition-colors">
-      <CardHeader className="text-center space-y-4">
-        <Icon className="h-12 w-12 mx-auto text-primary dark:text-red-400" />
+    <Card className="border-2 hover:border-primary/50 transition-colors">
+      <CardContent className="p-6 text-center space-y-4">
+        <Icon className="h-12 w-12 mx-auto text-primary" />
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
-      </CardHeader>
+      </CardContent>
     </Card>
   );
 }

@@ -1,6 +1,6 @@
 import { RotateCcw, Shield, Clock, DollarSign } from "lucide-react";
-import SectionWrapper from "../_components/shared/SectionWrapper";
-import SectionHeader from "../_components/shared/SectionHeader";
+import SectionWrapper from "../../components/SectionWrapper";
+import SectionHeader from "../../components/SectionHeader";
 
 export default function ReturnsPage() {
   return (
@@ -85,14 +85,14 @@ export default function ReturnsPage() {
               How to Return an Item
             </h3>
             <div className="space-y-4">
-              <div className="border-l-4 border-red-500 pl-4">
+              <div className="border-l-4 border-primary pl-4">
                 <h4 className="font-semibold mb-2">Step 1: Contact Us</h4>
                 <p className="text-muted-foreground">
                   Email us at returns@teacheasy.com or call 1-800-TEACH-EASY
                   with your order number and reason for return.
                 </p>
               </div>
-              <div className="border-l-4 border-red-500 pl-4">
+              <div className="border-l-4 border-primary pl-4">
                 <h4 className="font-semibold mb-2">
                   Step 2: Receive Return Authorization
                 </h4>
@@ -101,7 +101,7 @@ export default function ReturnsPage() {
                   (RMA) number and prepaid shipping label.
                 </p>
               </div>
-              <div className="border-l-4 border-red-500 pl-4">
+              <div className="border-l-4 border-primary pl-4">
                 <h4 className="font-semibold mb-2">Step 3: Package and Ship</h4>
                 <p className="text-muted-foreground">
                   Pack the item securely in its original packaging, attach the
@@ -109,7 +109,7 @@ export default function ReturnsPage() {
                   location.
                 </p>
               </div>
-              <div className="border-l-4 border-red-500 pl-4">
+              <div className="border-l-4 border-primary pl-4">
                 <h4 className="font-semibold mb-2">Step 4: Receive Refund</h4>
                 <p className="text-muted-foreground">
                   Once we receive and inspect your return, we&apos;ll process

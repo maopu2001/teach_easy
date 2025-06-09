@@ -18,7 +18,7 @@ export default function SectionWrapper({
   return (
     <section
       id={id}
-      className={`px-4 py-16 lg:py-24 ${variantClasses[variant]}`}
+      className={`px-4 py-8 lg:py-16 ${variantClasses[variant]}`}
     >
       <div className="container max-w-7xl mx-auto">{children}</div>
     </section>

@@ -22,7 +22,7 @@ export default function EmailSignup() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
-        className="flex-1 border-gray-300 focus:border-red-500 focus:ring-red-500"
+        className="flex-1 border-gray-300 focus:border-primary focus:ring-primary"
       />
       <Button
         type="submit"

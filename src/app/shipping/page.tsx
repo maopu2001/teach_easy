@@ -1,6 +1,6 @@
 import { Truck, Clock, MapPin, Package } from "lucide-react";
-import SectionWrapper from "../_components/shared/SectionWrapper";
-import SectionHeader from "../_components/shared/SectionHeader";
+import SectionWrapper from "../../components/SectionWrapper";
+import SectionHeader from "../../components/SectionHeader";
 
 export default function ShippingInfoPage() {
   return (

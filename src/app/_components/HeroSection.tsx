@@ -5,11 +5,11 @@ import Link from "next/link";
 
 export default function HeroSection() {
   return (
-    <section className="px-4 py-8 lg:py-20">
+    <section className="px-4 py-8 lg:py-24">
       <div className="container max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 text-center lg:text-left">
-            <div className="bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 w-fit mx-auto lg:mx-0 px-3 py-1 rounded-full text-sm font-medium">
+            <div className="bg-primary/20 text-primary w-fit mx-auto lg:mx-0 px-3 py-1 rounded-full text-sm font-medium">
               Trusted by 10,000+ Educators
             </div>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground">
