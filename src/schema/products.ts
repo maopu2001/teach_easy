@@ -149,8 +149,6 @@ productSchema.index({ name: "text", description: "text", tags: "text" });
 productSchema.index({ price: 1 });
 productSchema.index({ rating: -1 });
 productSchema.index({ totalSold: -1 });
-productSchema.index({ slug: 1 });
-productSchema.index({ sku: 1 });
 
 // Virtual for primary image URL
 productSchema.virtual("primaryImage").get(function () {

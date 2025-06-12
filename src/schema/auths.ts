@@ -23,6 +23,7 @@ export const authSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      unique: true,
     },
 
     // Password Management
@@ -76,7 +77,6 @@ export const authSchema = new mongoose.Schema(
 );
 
 // Indexes
-authSchema.index({ user: 1 }, { unique: true });
 authSchema.index({ emailVerificationToken: 1 });
 authSchema.index({ passwordResetToken: 1 });
 authSchema.index({ "refreshTokens.token": 1 });

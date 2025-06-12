@@ -57,7 +57,6 @@ export const categorySchema = new mongoose.Schema(
 );
 
 // Indexes
-categorySchema.index({ slug: 1 });
 categorySchema.index({ parent: 1, sortOrder: 1 });
 categorySchema.index({ subject: 1 });
 categorySchema.index({ sortOrder: 1 });

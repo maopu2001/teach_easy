@@ -179,7 +179,6 @@ export const couponSchema = new mongoose.Schema(
 );
 
 // Indexes
-couponSchema.index({ code: 1 });
 couponSchema.index({ isActive: 1, startDate: 1, endDate: 1 });
 couponSchema.index({ type: 1 });
 couponSchema.index({ "usageHistory.user": 1 });

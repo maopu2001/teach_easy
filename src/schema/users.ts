@@ -115,55 +115,9 @@ export const userSchema = new mongoose.Schema(
         ref: "Product",
       },
     ],
-
-    // Social Login
-    googleId: String,
-    facebookId: String,
-
-    // Vendor specific fields
-    vendorInfo: {
-      businessName: String,
-      businessType: {
-        type: String,
-        enum: ["individual", "company", "partnership"],
-      },
-      businessRegistrationNumber: String,
-      taxNumber: String,
-      businessAddress: {
-        addressLine1: String,
-        addressLine2: String,
-        city: String,
-        district: String,
-        division: String,
-        postalCode: String,
-        country: { type: String, default: "Bangladesh" },
-      },
-      bankDetails: {
-        bankName: String,
-        accountNumber: String,
-        accountHolderName: String,
-        branchName: String,
-        routingNumber: String,
-      },
-      commissionRate: {
-        type: Number,
-        min: 0,
-        max: 100,
-        default: 10, // percentage
-      },
-      isVerified: { type: Boolean, default: false },
-      verificationDocuments: [
-        {
-          type: { type: String, required: true },
-          url: { type: String, required: true },
-          status: {
-            type: String,
-            enum: ["pending", "approved", "rejected"],
-            default: "pending",
-          },
-          uploadedAt: { type: Date, default: Date.now },
-        },
-      ],
+    cart: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Cart",
     },
 
     // Analytics & Tracking
@@ -207,12 +161,9 @@ export const userSchema = new mongoose.Schema(
   }
 );
 
-// Indexes
-userSchema.index({ email: 1 });
 userSchema.index({ phone: 1 });
 userSchema.index({ role: 1 });
 userSchema.index({ "vendorInfo.isVerified": 1 });
-userSchema.index({ referralCode: 1 });
 userSchema.index({ createdAt: -1 });
 
 // Virtual for account lock status

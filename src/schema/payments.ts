@@ -147,8 +147,6 @@ export const paymentSchema = new mongoose.Schema(
 );
 
 // Indexes
-paymentSchema.index({ paymentId: 1 });
-paymentSchema.index({ transactionId: 1 });
 paymentSchema.index({ order: 1 });
 paymentSchema.index({ user: 1, createdAt: -1 });
 paymentSchema.index({ status: 1, createdAt: -1 });
