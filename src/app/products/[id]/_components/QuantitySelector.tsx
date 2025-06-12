@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import config from "@/lib/config";
 import { useCart } from "@/store/cartStore";
-import { MAX_ITEMS } from "@/store/cartStore";
 
 interface QuantitySelectorProps {
   productId: string;
@@ -12,7 +12,7 @@ interface QuantitySelectorProps {
 export default function QuantitySelector({
   productId,
   disabled = false,
-  maxStock = MAX_ITEMS,
+  maxStock = config.app.maxItems,
 }: QuantitySelectorProps) {
   const { cart, addToCart, removeFromCart } = useCart();
   const itemQuantity = cart.filter((item) => item === productId).length;
@@ -36,7 +36,9 @@ export default function QuantitySelector({
           variant="outline"
           size="icon"
           className="h-7 w-7 px-0"
-          disabled={disabled || itemQuantity >= Math.min(MAX_ITEMS, maxStock)}
+          disabled={
+            disabled || itemQuantity >= Math.min(config.app.maxItems, maxStock)
+          }
           onClick={() => addToCart(productId)}
           aria-label="Increase quantity"
         >
@@ -48,11 +50,13 @@ export default function QuantitySelector({
           (Out of stock)
         </span>
       )}
-      {!disabled && itemQuantity >= maxStock && maxStock < MAX_ITEMS && (
-        <span className="text-sm text-orange-600 ml-2">
-          (Max stock: {maxStock})
-        </span>
-      )}
+      {!disabled &&
+        itemQuantity >= maxStock &&
+        maxStock < config.app.maxItems && (
+          <span className="text-sm text-orange-600 ml-2">
+            (Max stock: {maxStock})
+          </span>
+        )}
     </div>
   );
 }

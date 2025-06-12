@@ -1,3 +1,4 @@
+import config from "@/lib/config";
 import { toast } from "sonner";
 import { create } from "zustand";
 import { persist, subscribeWithSelector } from "zustand/middleware";
@@ -11,9 +12,6 @@ interface Cart {
   setHasHydrated: (hasHydrated: boolean) => void;
 }
 
-export const MAX_ITEMS = parseInt(process.env.NEXT_PUBLIC_MAX_ITEMS || "1");
-const CART_STORAGE_KEY = "cart-storage";
-
 export const useCart = create<Cart>()(
   subscribeWithSelector(
     persist(
@@ -23,9 +21,9 @@ export const useCart = create<Cart>()(
         addToCart: (id) =>
           set((state) => {
             const itemCount = state.cart.filter((item) => item === id).length;
-            if (itemCount >= MAX_ITEMS) {
+            if (itemCount >= config.app.maxItems) {
               toast.warning(
-                `You can only add ${MAX_ITEMS} of the same item to the cart.`
+                `You can only add ${config.app.maxItems} of the same item to the cart.`
               );
               return state;
             }
@@ -45,7 +43,7 @@ export const useCart = create<Cart>()(
         setHasHydrated: (hasHydrated) => set({ _hasHydrated: hasHydrated }),
       }),
       {
-        name: CART_STORAGE_KEY,
+        name: "cart-storage",
         onRehydrateStorage: () => (state) => {
           state?.setHasHydrated(true);
         },

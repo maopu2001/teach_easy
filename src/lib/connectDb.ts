@@ -1,4 +1,4 @@
-import { intializeSchemas } from "@/schema";
+import { initializeSchemas } from "@/schema";
 import mongoose, { Mongoose } from "mongoose";
 
 const MONGODB_URI = process.env.MONGODB_URI as string;
@@ -33,7 +33,7 @@ export const connectDB = async () => {
     cached.promise = mongoose
       .connect(MONGODB_URI, opts)
       .then((mongoose) => {
-        intializeSchemas();
+        initializeSchemas();
         return mongoose;
       })
       .catch((err) => {

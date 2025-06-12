@@ -1,5 +1,5 @@
 "use client";
-import { MAX_ITEMS, useCart } from "@/store/cartStore";
+import { useCart } from "@/store/cartStore";
 import { Button } from "./ui/button";
 import { Heart, ShoppingCart } from "lucide-react";
 import { useWishlist } from "@/store/wishlistStore";
@@ -12,6 +12,7 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { toast } from "sonner";
+import config from "@/lib/config";
 
 export const BuyNowButton = ({ id }: { id: string }) => {
   const handleBuyNow = () => {
@@ -30,7 +31,7 @@ export const AddToCartButton = ({
 }) => {
   const { cart, addToCart } = useCart();
   const currentQuantity = cart.filter((item) => item === id).length;
-  const isMaxReached = currentQuantity >= MAX_ITEMS;
+  const isMaxReached = currentQuantity >= config.app.maxItems;
   const isDisabled = disabled || isMaxReached;
 
   const handleAddToCart = () => {
@@ -51,7 +52,7 @@ export const AddToCartButton = ({
           {disabled
             ? "Out of Stock"
             : isMaxReached
-            ? `Max ${MAX_ITEMS} items`
+            ? `Max ${config.app.maxItems} items`
             : "Add to Cart"}
         </span>
       </div>
@@ -93,7 +94,7 @@ export const AddToWishlistButton = ({ id }: { id: string }) => {
 export const ChangeItemQuantity = ({
   id,
   quantity,
-  maxStock = MAX_ITEMS,
+  maxStock = config.app.maxItems,
   disabled = false,
 }: {
   id: string;
@@ -122,7 +123,9 @@ export const ChangeItemQuantity = ({
         variant="outline"
         size="icon"
         className="h-7 w-7 px-0"
-        disabled={disabled || quantity >= Math.min(MAX_ITEMS, maxStock)}
+        disabled={
+          disabled || quantity >= Math.min(config.app.maxItems, maxStock)
+        }
         onClick={() => addToCart(id)}
         aria-label="Increase quantity"
       >
