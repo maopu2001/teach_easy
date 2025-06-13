@@ -24,8 +24,16 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased min-h-screen">
         <Header />
-        <Toaster richColors duration={1000} position="top-center" closeButton theme="system" />
-        <main>{children}</main>
+        <Toaster
+          richColors
+          duration={1000}
+          position="top-center"
+          closeButton
+          theme="system"
+        />
+        <main className="grid min-h-[calc(100vh-8rem)] md:min-h-[calc(100vh-10rem)]">
+          {children}
+        </main>
         <Footer />
         <MobileBottomNavigation />
       </body>

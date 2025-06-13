@@ -66,6 +66,9 @@ export const config = {
     email: process.env.ADMIN_EMAIL,
     password: process.env.ADMIN_PASSWORD,
   },
+  site: {
+    url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  },
 } as const;
 
 export default config;

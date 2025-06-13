@@ -45,6 +45,11 @@ export const userSchema = new mongoose.Schema(
     },
 
     // Account Status
+    isVerified: {
+      // to check if the teachers' accounts are verified
+      type: Boolean,
+      default: false,
+    },
     isEmailVerified: {
       type: Boolean,
       default: false,
@@ -136,23 +141,6 @@ export const userSchema = new mongoose.Schema(
     lastActiveAt: Date,
     loginAttempts: { type: Number, default: 0 },
     lockUntil: Date,
-
-    // Marketing
-    referralCode: {
-      type: String,
-      unique: true,
-      sparse: true,
-    },
-    referredBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    referrals: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
   },
   {
     timestamps: true,
@@ -163,24 +151,11 @@ export const userSchema = new mongoose.Schema(
 
 userSchema.index({ phone: 1 });
 userSchema.index({ role: 1 });
-userSchema.index({ "vendorInfo.isVerified": 1 });
 userSchema.index({ createdAt: -1 });
 
 // Virtual for account lock status
 userSchema.virtual("isLocked").get(function () {
   return !!(this.lockUntil && this.lockUntil > new Date());
-});
-
-// Pre-save middleware
-userSchema.pre("save", function (next) {
-  // Generate referral code if not exists
-  if (!this.referralCode && this.role === "customer") {
-    this.referralCode =
-      this.email.split("@")[0] +
-      Math.random().toString(36).substring(2, 8).toUpperCase();
-  }
-
-  next();
 });
 
 // Methods
