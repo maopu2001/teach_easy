@@ -3,7 +3,7 @@ import Image from "next/image";
 import NavBar from "./NavBar";
 import Link from "next/link";
 import SearchBar from "./SearchBar";
-import { Search, Menu } from "lucide-react";
+import { Search, Menu, User, LogOut, ChevronDown } from "lucide-react";
 import ThemeChanger from "./ThemeChanger";
 import Cart from "../Cart";
 import Wishlist from "../Wishlist";
@@ -16,10 +16,85 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useSession, signOut } from "next-auth/react";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const { data: session, status } = useSession();
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node)
+      ) {
+        setUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const UserAuthenticated = () => (
+    <div className="relative" ref={userMenuRef}>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="flex items-center space-x-2"
+        onClick={() => setUserMenuOpen(!userMenuOpen)}
+      >
+        <User className="h-4 w-4" />
+        <span className="hidden lg:inline">
+          {session?.user?.name || "User"}
+        </span>
+        <ChevronDown className="h-3 w-3" />
+      </Button>
+      {userMenuOpen && (
+        <div className="absolute right-0 mt-2 w-48 bg-background border border-border rounded-md shadow-lg z-50">
+          <div className="py-1">
+            <Link
+              href="/profile"
+              className="block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+              onClick={() => setUserMenuOpen(false)}
+            >
+              Profile
+            </Link>
+            <button
+              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950 transition-colors flex items-center"
+              onClick={() => {
+                setUserMenuOpen(false);
+                signOut();
+              }}
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  const UserNotAuthenticated = () => (
+    <div className="flex items-center space-x-2">
+      <Link href="/auth/login">
+        <Button variant="ghost" size="sm">
+          Login
+        </Button>
+      </Link>
+      <Link href="/auth/register">
+        <Button variant="default" size="sm">
+          Sign Up
+        </Button>
+      </Link>
+    </div>
+  );
 
   return (
     <header className="sticky top-0 flex items-center justify-between px-4 h-16 md:h-20 backdrop-blur-sm bg-background/90 z-40">
@@ -46,18 +121,16 @@ const Header = () => {
           <ThemeChanger />
           <Wishlist />
           <Cart />
-          <div className="flex items-center space-x-2">
-            <Link href="/auth/login">
-              <Button variant="ghost" size="sm">
-                Login
-              </Button>
-            </Link>
-            <Link href="/auth/register">
-              <Button variant="default" size="sm">
-                Sign Up
-              </Button>
-            </Link>
-          </div>
+          {status === "loading" ? (
+            <div className="flex items-center space-x-2">
+              <div className="w-16 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+              <div className="w-16 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+            </div>
+          ) : session ? (
+            <UserAuthenticated />
+          ) : (
+            <UserNotAuthenticated />
+          )}
         </div>
 
         {/* Mobile Actions */}
@@ -76,30 +149,66 @@ const Header = () => {
               <div className="mt-6 px-5 space-y-4">
                 <NavBar mobile onItemClick={() => setMobileMenuOpen(false)} />
                 <ThemeChanger variant="text" />
-                <div className="flex flex-col space-y-2 pt-4 border-t border-border">
-                  <Link
-                    href="/auth/login"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
+                {status === "loading" ? (
+                  <div className="flex flex-col space-y-2 pt-4 border-t border-border">
+                    <div className="w-full h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                    <div className="w-full h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                  </div>
+                ) : session ? (
+                  <div className="flex flex-col space-y-2 pt-4 border-t border-border">
+                    <div className="flex items-center space-x-2 px-3 py-2 text-sm font-medium">
+                      <User className="h-4 w-4" />
+                      <span>{session.user?.name || "User"}</span>
+                    </div>
+                    <Link
+                      href="/profile"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Button
+                        variant="ghost"
+                        className="w-full h-10 justify-start"
+                      >
+                        Profile
+                      </Button>
+                    </Link>
                     <Button
                       variant="ghost"
-                      className="w-full h-10 justify-start bg-accent"
+                      className="w-full h-10 justify-start text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        signOut();
+                      }}
                     >
-                      Login
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sign Out
                     </Button>
-                  </Link>
-                  <Link
-                    href="/auth/register"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <Button
-                      variant="default"
-                      className="w-full h-10 justify-start"
+                  </div>
+                ) : (
+                  <div className="flex flex-col space-y-2 pt-4 border-t border-border">
+                    <Link
+                      href="/auth/login"
+                      onClick={() => setMobileMenuOpen(false)}
                     >
-                      Sign Up
-                    </Button>
-                  </Link>
-                </div>
+                      <Button
+                        variant="ghost"
+                        className="w-full h-10 justify-start bg-accent"
+                      >
+                        Login
+                      </Button>
+                    </Link>
+                    <Link
+                      href="/auth/register"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Button
+                        variant="default"
+                        className="w-full h-10 justify-start"
+                      >
+                        Sign Up
+                      </Button>
+                    </Link>
+                  </div>
+                )}
               </div>
               <SheetFooter className="text-center text-xs gap-0">
                 &copy; {new Date().getFullYear()} Teach Easy <br />

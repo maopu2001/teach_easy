@@ -33,7 +33,7 @@ export default function SignUpPage() {
 
           {/* Social Registration */}
           <div className="grid grid-cols-1 gap-3">
-            <Link href="/register/google">
+            <Link href="/auth/register/google">
               <Button variant="outline" className="w-full">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

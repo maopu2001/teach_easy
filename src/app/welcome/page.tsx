@@ -12,7 +12,7 @@ export default async function WelcomePage({ searchParams }: WelcomePageProps) {
   const session = await auth();
 
   if (!session?.user) {
-    redirect("/login");
+    redirect("/auth/login");
   }
 
   const isFromGoogle = (await searchParams).source === "google";

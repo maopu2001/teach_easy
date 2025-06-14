@@ -43,7 +43,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   session: {
     strategy: "jwt",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.AUTH_SECRET,
   pages: {
     signIn: "/auth/login",
   },
@@ -59,8 +59,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
           const role = (selectedRole as "customer" | "teacher") || "customer";
 
-          console.log("NextAuth signIn - Selected role:", role);
-
           const result = await handleGoogleSignUp(
             {
               email: user.email,
@@ -69,8 +67,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             },
             role
           );
-
-          console.log("NextAuth signIn - handleGoogleSignUp result:", result);
 
           // Add user ID to the user object for JWT
           user.id = result.userId;
@@ -85,11 +81,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
               maxAge: 60, // 1 minute
             });
           }
-
-          console.log("NextAuth signIn - user after setting flags:", {
-            id: user.id,
-            isNewUser: user.isNewUser,
-          });
 
           // Clear the role cookie
           cookieStore.delete("pending-role");
@@ -122,22 +113,18 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return session;
     },
     async redirect({ url, baseUrl }) {
-      console.log("NextAuth redirect - url:", url, "baseUrl:", baseUrl);
-
       // Check if we have a new user redirect cookie
       const { cookies } = await import("next/headers");
       const cookieStore = await cookies();
       const newUserRedirect = cookieStore.get("new-user-redirect");
 
       if (newUserRedirect?.value === "true") {
-        console.log("NextAuth redirect - Redirecting new user to welcome page");
         cookieStore.delete("new-user-redirect");
-        return `${baseUrl}/welcome?source=google`;
+        return `${baseUrl}/auth/welcome?source=google`;
       }
 
       // If the callback URL is our custom callback page, redirect to home
       if (url.includes("/auth/callback/google")) {
-        console.log("NextAuth redirect - Redirecting to home page");
         return `${baseUrl}/`;
       }
 

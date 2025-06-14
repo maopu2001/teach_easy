@@ -46,7 +46,7 @@ class EmailUtils {
   static async sendEmailVerification(
     data: EmailVerificationData
   ): Promise<EmailResult> {
-    const verificationLink = `${this.baseUrl}/verify-email?token=${data.verificationToken}`;
+    const verificationLink = `${this.baseUrl}/auth/verify-email?token=${data.verificationToken}`;
 
     const template = EmailTemplates.emailVerification({
       userName: data.userName,

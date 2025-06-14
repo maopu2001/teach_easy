@@ -164,7 +164,7 @@ class EmailTemplates {
     userName: string;
     loginLink?: string;
   }): EmailTemplate {
-    const { userName, loginLink = `${this.baseUrl}/login` } = data;
+    const { userName, loginLink = `${this.baseUrl}/auth/login` } = data;
 
     return {
       subject: `Welcome to ${this.appName}!`,
