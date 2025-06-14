@@ -46,6 +46,18 @@ const Header = () => {
           <ThemeChanger />
           <Wishlist />
           <Cart />
+          <div className="flex items-center space-x-2">
+            <Link href="/auth/login">
+              <Button variant="ghost" size="sm">
+                Login
+              </Button>
+            </Link>
+            <Link href="/auth/register">
+              <Button variant="default" size="sm">
+                Sign Up
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Mobile Actions */}
@@ -64,6 +76,30 @@ const Header = () => {
               <div className="mt-6 px-5 space-y-4">
                 <NavBar mobile onItemClick={() => setMobileMenuOpen(false)} />
                 <ThemeChanger variant="text" />
+                <div className="flex flex-col space-y-2 pt-4 border-t border-border">
+                  <Link
+                    href="/auth/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Button
+                      variant="ghost"
+                      className="w-full h-10 justify-start bg-accent"
+                    >
+                      Login
+                    </Button>
+                  </Link>
+                  <Link
+                    href="/auth/register"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Button
+                      variant="default"
+                      className="w-full h-10 justify-start"
+                    >
+                      Sign Up
+                    </Button>
+                  </Link>
+                </div>
               </div>
               <SheetFooter className="text-center text-xs gap-0">
                 &copy; {new Date().getFullYear()} Teach Easy <br />

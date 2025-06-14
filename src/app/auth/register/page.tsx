@@ -12,7 +12,6 @@ import {
 import RegistrationForm from "./_components/RegistrationForm";
 
 export default function SignUpPage() {
-  
   return (
     <div className="container mx-auto flex min-h-[calc(100vh-200px)] items-center justify-center py-10 px-4">
       <Card className="mx-auto w-full max-w-md px-4">
@@ -86,7 +85,7 @@ export default function SignUpPage() {
           <div className="text-center text-sm">
             Already have an account?{" "}
             <Link
-              href="/signin"
+              href="/auth/login"
               className="font-medium text-primary hover:underline"
             >
               Sign in

@@ -4,6 +4,7 @@ import Header from "@/components/Header/Header";
 import MobileBottomNavigation from "@/components/MobileBottomNavigation";
 import { Toaster } from "sonner";
 import Footer from "@/components/Footer";
+import AuthProvider from "@/components/Providers";
 
 export const metadata: Metadata = {
   title: "Teach Easy",
@@ -23,19 +24,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased min-h-screen">
-        <Header />
-        <Toaster
-          richColors
-          duration={1000}
-          position="top-center"
-          closeButton
-          theme="system"
-        />
-        <main className="grid min-h-[calc(100vh-8rem)] md:min-h-[calc(100vh-10rem)]">
-          {children}
-        </main>
-        <Footer />
-        <MobileBottomNavigation />
+        <AuthProvider>
+          <Header />
+          <Toaster
+            richColors
+            duration={1000}
+            position="top-center"
+            closeButton
+            theme="system"
+          />
+          <main className="grid min-h-[calc(100vh-8rem)] md:min-h-[calc(100vh-10rem)]">
+            {children}
+          </main>
+          <Footer />
+          <MobileBottomNavigation />
+        </AuthProvider>
       </body>
     </html>
   );
