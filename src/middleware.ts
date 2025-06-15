@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
 
-export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
-  const skipRoutes = ["/_next", "/api", "/public", "."];
-
-  if (skipRoutes.some((route) => pathname.startsWith(route)))
-    return NextResponse.next();
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
 
   const authPages = ["/auth/login", "/auth/register", "/auth/reset-password"];
   const protectedRoutes = ["/profile", "/checkout"];
@@ -19,20 +15,23 @@ export async function middleware(request: NextRequest) {
   if (!isAuthPage && !isProtectedRoute) return NextResponse.next();
 
   try {
-    const res = await fetch("http://localhost:3000/api/auth/check");
-    const data = await res.json();
-    const isAuthenticated = data.isAuthenticated;
+    const token = await getToken({
+      req,
+      secret: process.env.AUTH_SECRET,
+    });
+    console.log("Token:", token);
+    const isAuthenticated = token?.sub !== undefined;
 
     // Redirect authenticated users away from auth pages
     if (isAuthenticated && isAuthPage) {
       console.log("Redirecting authenticated user away from auth page");
-      return NextResponse.redirect(new URL("/", request.url));
+      return NextResponse.redirect(new URL("/", req.url));
     }
 
     // Redirect unauthenticated users from protected routes to login
     if (!isAuthenticated && isProtectedRoute) {
       console.log("Redirecting unauthenticated user to login");
-      const loginUrl = new URL("/auth/login", request.url);
+      const loginUrl = new URL("/auth/login", req.url);
       loginUrl.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(loginUrl);
     }
