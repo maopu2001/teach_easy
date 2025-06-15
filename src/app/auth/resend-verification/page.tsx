@@ -42,8 +42,7 @@ export default function ResendVerificationPage() {
       } else {
         setError(result.message);
       }
-    } catch (err) {
-      console.error("Resend verification error:", err);
+    } catch {
       setError("An error occurred while sending verification email");
     } finally {
       setLoading(false);

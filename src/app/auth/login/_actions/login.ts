@@ -78,8 +78,7 @@ export async function authenticateUser(
         avatar: user.avatar,
       },
     };
-  } catch (error) {
-    console.error("Authentication error:", error);
+  } catch {
     return {
       success: false,
       message: "An error occurred during authentication",
@@ -105,8 +104,7 @@ export async function getUserById(userId: string) {
       isActive: user.isActive,
       emailVerified: user.isEmailVerified,
     };
-  } catch (error) {
-    console.error("Get user error:", error);
+  } catch {
     return null;
   }
 }

@@ -112,12 +112,12 @@ export default function PaymentForm({
   ];
 
   const continueWithoutPaying = () => {
-    // Handle logic for continuing without payment
+    //TODO: Handle logic for continuing without payment
     console.log("Continuing without payment");
   };
 
   const payNow = () => {
-    // Handle logic for paying now
+    //TODO: Handle logic for paying now
     console.log("Paying now");
   };
 

@@ -7,6 +7,7 @@ import { generateEmailVerificationToken } from "@/lib/email-verification";
 import EmailUtils from "@/lib/email-utils";
 import { randomBytes } from "crypto";
 
+// FIXME:
 export async function registerEmail(data: RegistrationFormData) {
   try {
     // Connect to database

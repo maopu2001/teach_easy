@@ -59,7 +59,6 @@ class EmailService {
 
   async sendEmail(options: EmailOptions): Promise<EmailResult> {
     if (!this.transporter) {
-      console.error("Email transporter not initialized");
       return {
         success: false,
         error: "Email service not configured",

@@ -1,6 +1,13 @@
 "use client";
 import Link from "next/link";
-import { Home, Search, Heart, ShoppingCart, ShoppingBag } from "lucide-react";
+import {
+  Home,
+  Search,
+  Heart,
+  ShoppingCart,
+  ShoppingBag,
+  User,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import { useCart } from "@/store/cartStore";
 import { useWishlist } from "@/store/wishlistStore";
@@ -9,8 +16,10 @@ import Cart from "./Cart";
 import Wishlist from "./Wishlist";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useSession } from "next-auth/react";
 
 const MobileBottomNavigation = () => {
+  const { data: session } = useSession();
   const { cart } = useCart();
   const { items } = useWishlist();
   const pathname = usePathname();
@@ -71,26 +80,6 @@ const MobileBottomNavigation = () => {
           <SearchBar trigger={mobileSearchTrigger} />
 
           <div className="relative">
-            <Wishlist
-              trigger={
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="p-2 size-14 flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-primary relative"
-                >
-                  <Heart className="h-5 w-5" />
-                  <span className="text-xs">Wishlist</span>
-                  {wishlistItemCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center min-w-[1.25rem]">
-                      {wishlistItemCount > 99 ? "99+" : wishlistItemCount}
-                    </span>
-                  )}
-                </Button>
-              }
-            />
-          </div>
-
-          <div className="relative">
             <Cart
               trigger={
                 <Button
@@ -109,6 +98,41 @@ const MobileBottomNavigation = () => {
               }
             />
           </div>
+
+          {!!session ? (
+            <div className="relative">
+              <Link href="/profile">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="p-2 size-14 flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-primary relative"
+                >
+                  <User className="h-5 w-5" />
+                  <span className="text-xs">Profile</span>
+                </Button>
+              </Link>
+            </div>
+          ) : (
+            <div className="relative">
+              <Wishlist
+                trigger={
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="p-2 size-14 flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-primary relative"
+                  >
+                    <Heart className="h-5 w-5" />
+                    <span className="text-xs">Wishlist</span>
+                    {wishlistItemCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center min-w-[1.25rem]">
+                        {wishlistItemCount > 99 ? "99+" : wishlistItemCount}
+                      </span>
+                    )}
+                  </Button>
+                }
+              />
+            </div>
+          )}
         </div>
       </nav>
 

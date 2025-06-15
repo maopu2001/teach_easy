@@ -16,6 +16,7 @@ import config from "@/lib/config";
 
 export const BuyNowButton = ({ id }: { id: string }) => {
   const handleBuyNow = () => {
+    //TODO: implement buy now functtion
     console.log(`Buying ${id} now`);
   };
 
@@ -67,10 +68,8 @@ export const AddToWishlistButton = ({ id }: { id: string }) => {
   const handleWishlist = () => {
     if (isInWishlist) {
       removeFromWishlist(id);
-      console.log(`Removed ${id} from wishlist`);
     } else {
       addToWishlist(id);
-      console.log(`Added ${id} to wishlist`);
     }
   };
 

@@ -46,8 +46,7 @@ export default function LoginForm() {
         router.push("/");
         router.refresh();
       }
-    } catch (error) {
-      console.error("Login error:", error);
+    } catch {
       toast.error("An error occurred while signing in");
     } finally {
       setIsLoading(false);

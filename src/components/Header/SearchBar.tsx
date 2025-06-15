@@ -52,7 +52,6 @@ const SearchBar = ({ trigger }: { trigger: React.ReactNode }) => {
     if (e.key === "Escape") setOpen(false);
     if (e.key === "Enter" && filteredProducts.length > 0) {
       const selectedProduct = filteredProducts[activeIndex];
-      console.log(`Selected product: ${selectedProduct.name}`);
       window.location.href = `/products/${selectedProduct.id}`;
       setOpen(false);
     }
@@ -112,8 +111,6 @@ const SearchBar = ({ trigger }: { trigger: React.ReactNode }) => {
                   <div
                     key={product.id}
                     onClick={() => {
-                      console.log(`Selected product: ${product.name}`);
-                      // Navigate to the product page
                       window.location.href = `/products/${product.id}`;
                       setOpen(false);
                     }}

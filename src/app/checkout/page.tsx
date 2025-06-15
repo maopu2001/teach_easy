@@ -50,8 +50,6 @@ export default function CheckoutPage() {
   // Wait for cart to be hydrated from localStorage
   useEffect(() => {
     if (_hasHydrated) {
-      console.log("Cart contents:", cart);
-      console.log("Cart length:", cart.length);
     }
   }, [cart, _hasHydrated]);
 

@@ -1,4 +1,5 @@
 import { verifyEmailToken } from "@/lib/email-verification";
+import Image from "next/image";
 import Link from "next/link";
 
 interface VerifyEmailPageProps {
@@ -46,19 +47,12 @@ export default async function VerifyEmailPage({
           {result.success ? (
             <>
               <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
-                <svg
-                  className="h-6 w-6 text-green-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
+                <Image
+                  src="/icons/tick.svg"
+                  alt="Tick"
+                  width={50}
+                  height={50}
+                />
               </div>
               <h2 className="mt-6 text-3xl font-bold text-foreground">
                 Email Verified!
@@ -75,20 +69,13 @@ export default async function VerifyEmailPage({
             </>
           ) : (
             <>
-              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-primary/40">
-                <svg
-                  className="h-6 w-6 text-red-600 dark:text-red-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+              <div className="mx-auto flex items-center justify-center h-12 w-12 p-1 rounded-full bg-primary/20">
+                <Image
+                  src="/icons/cross.svg"
+                  alt="Cross"
+                  width={50}
+                  height={50}
+                />
               </div>
               <h2 className="mt-6 text-3xl font-bold text-foreground">
                 Verification Failed

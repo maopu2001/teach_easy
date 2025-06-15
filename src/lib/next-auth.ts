@@ -49,6 +49,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   },
   callbacks: {
     async signIn({ user, account }) {
+      console.log(user, account);
       // Handle Google OAuth sign-in
       if (account?.provider === "google" && user.email && user.name) {
         try {
@@ -72,17 +73,15 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           user.id = result.userId;
           user.isNewUser = result.isNewUser;
 
-          // Store the isNewUser flag in a cookie for the callback page
           if (result.isNewUser) {
-            cookieStore.set("new-user-redirect", "true", {
+            cookieStore.set("new-user-redirect", "google", {
               httpOnly: true,
               secure: process.env.NODE_ENV === "production",
               sameSite: "lax",
-              maxAge: 60, // 1 minute
+              maxAge: 60,
             });
           }
 
-          // Clear the role cookie
           cookieStore.delete("pending-role");
 
           return true;
@@ -94,9 +93,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
       return true;
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }) {
       // Add user info to token
-      if (user && account?.provider === "google") {
+      if (user) {
         token.userId = user.id;
         token.isNewUser = user.isNewUser;
       }
@@ -111,27 +110,6 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       }
 
       return session;
-    },
-    async redirect({ url, baseUrl }) {
-      // Check if we have a new user redirect cookie
-      const { cookies } = await import("next/headers");
-      const cookieStore = await cookies();
-      const newUserRedirect = cookieStore.get("new-user-redirect");
-
-      if (newUserRedirect?.value === "true") {
-        cookieStore.delete("new-user-redirect");
-        return `${baseUrl}/auth/welcome?source=google`;
-      }
-
-      // If the callback URL is our custom callback page, redirect to home
-      if (url.includes("/auth/callback/google")) {
-        return `${baseUrl}/`;
-      }
-
-      // Default redirect behavior
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-      if (new URL(url).origin === baseUrl) return url;
-      return baseUrl;
     },
   },
 });

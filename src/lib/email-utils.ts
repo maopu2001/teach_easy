@@ -2,6 +2,7 @@ import config from "./config";
 import emailService, { EmailOptions, EmailResult } from "./email-service";
 import EmailTemplates from "./email-templates";
 
+//TODO: need to check this
 export interface EmailVerificationData {
   userName: string;
   email: string;

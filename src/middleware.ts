@@ -19,18 +19,25 @@ export async function middleware(req: NextRequest) {
       req,
       secret: process.env.AUTH_SECRET,
     });
-    console.log("Token:", token);
     const isAuthenticated = token?.sub !== undefined;
 
-    // Redirect authenticated users away from auth pages
-    if (isAuthenticated && isAuthPage) {
-      console.log("Redirecting authenticated user away from auth page");
-      return NextResponse.redirect(new URL("/", req.url));
+    if (token?.isNewUser) {
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      const isNewUser = cookieStore.get("new-user-redirect")?.value;
+      cookieStore.delete("new-user-redirect");
+
+      if (isAuthenticated && isNewUser)
+        return NextResponse.redirect(
+          new URL(`/welcome?source=${isNewUser}`, req.url)
+        );
     }
 
-    // Redirect unauthenticated users from protected routes to login
+    if (isAuthenticated && isAuthPage)
+      return NextResponse.redirect(new URL("/", req.url));
+
     if (!isAuthenticated && isProtectedRoute) {
-      console.log("Redirecting unauthenticated user to login");
+      // Redirect unauthenticated users from protected routes to login
       const loginUrl = new URL("/auth/login", req.url);
       loginUrl.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(loginUrl);
@@ -39,8 +46,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   } catch (error) {
     console.error("Middleware auth check error:", error);
-    // On error, allow the request to continue
-    return NextResponse.next();
+    return;
   }
 }
 

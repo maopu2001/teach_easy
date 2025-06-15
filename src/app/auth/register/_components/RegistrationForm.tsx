@@ -57,7 +57,6 @@ export default function RegistrationForm() {
         router.push("/");
       }
     } catch (err) {
-      console.error("Registration error:", err);
       setError(
         (err as Error).message ||
           "An error occurred during registration. Please try again."

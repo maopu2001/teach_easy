@@ -3,6 +3,7 @@ import { Auth, User } from "@/schema";
 import { connectDB } from "@/lib/connectDb";
 import EmailUtils from "@/lib/email-utils";
 
+// TODO: need to chekc this
 export interface EmailVerificationResult {
   success: boolean;
   message: string;
