@@ -21,17 +21,7 @@ export async function middleware(req: NextRequest) {
     });
     const isAuthenticated = token?.sub !== undefined;
 
-    if (token?.isNewUser) {
-      const { cookies } = await import("next/headers");
-      const cookieStore = await cookies();
-      const isNewUser = cookieStore.get("new-user-redirect")?.value;
-      cookieStore.delete("new-user-redirect");
-
-      if (isAuthenticated && isNewUser)
-        return NextResponse.redirect(
-          new URL(`/welcome?source=${isNewUser}`, req.url)
-        );
-    }
+    console.log(token, isAuthenticated, isAuthPage);
 
     if (isAuthenticated && isAuthPage)
       return NextResponse.redirect(new URL("/", req.url));

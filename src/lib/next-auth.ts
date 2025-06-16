@@ -49,11 +49,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   },
   callbacks: {
     async signIn({ user, account }) {
-      console.log(user, account);
-      // Handle Google OAuth sign-in
       if (account?.provider === "google" && user.email && user.name) {
         try {
-          // Get role from cookies (set in registerGoogle function)
           const { cookies } = await import("next/headers");
           const cookieStore = await cookies();
           const selectedRole = cookieStore.get("pending-role")?.value;
@@ -69,18 +66,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             role
           );
 
-          // Add user ID to the user object for JWT
           user.id = result.userId;
-          user.isNewUser = result.isNewUser;
-
-          if (result.isNewUser) {
-            cookieStore.set("new-user-redirect", "google", {
-              httpOnly: true,
-              secure: process.env.NODE_ENV === "production",
-              sameSite: "lax",
-              maxAge: 60,
-            });
-          }
 
           cookieStore.delete("pending-role");
 
@@ -94,21 +80,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return true;
     },
     async jwt({ token, user }) {
-      // Add user info to token
-      if (user) {
-        token.userId = user.id;
-        token.isNewUser = user.isNewUser;
-      }
-
+      if (user) token.userId = user.id;
       return token;
     },
     async session({ session, token }) {
-      // Add user info to session
-      if (token.userId) {
-        session.user.id = token.userId as string;
-        session.user.isNewUser = token.isNewUser as boolean;
-      }
-
+      if (token.userId) session.user.id = token.userId as string;
       return session;
     },
   },
