@@ -71,20 +71,29 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           cookieStore.delete("pending-role");
 
           return true;
-        } catch (error) {
-          console.error("Google sign-in error:", error);
+        } catch {
           return false;
         }
       }
 
       return true;
     },
-    async jwt({ token, user }) {
-      if (user) token.userId = user.id;
+    async jwt({ token, user, session, trigger }) {
+      if (trigger === "update" && session?.image) token.image = session.image;
+
+      if (user) {
+        token.userId = user.id;
+        token.role = (user as any).role;
+      }
+
       return token;
     },
     async session({ session, token }) {
       if (token.userId) session.user.id = token.userId as string;
+      if (token.role)
+        session.user.role = token.role as "customer" | "teacher" | "admin";
+      if (token.image) session.user.image = token.image as string;
+
       return session;
     },
   },

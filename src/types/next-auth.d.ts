@@ -8,10 +8,11 @@ declare module "next-auth" {
       name?: string | null;
       email?: string | null;
       image?: string | null;
+      role: "customer" | "teacher" | "admin";
     };
   }
 
   interface JWT {
-    userId?: string;
+    userId: string;
   }
 }

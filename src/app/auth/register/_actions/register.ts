@@ -88,7 +88,9 @@ export async function registerGoogle(
     maxAge: 60 * 10, // 10 minutes
   });
 
-  await signIn("google");
+  await signIn("google", {
+    redirectTo: "/profile",
+  });
 }
 
 export async function handleGoogleSignUp(

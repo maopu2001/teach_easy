@@ -23,16 +23,12 @@ export const config = {
   // Email Configuration
   email: {
     user: process.env.EMAIL_USER,
-    clientId: process.env.EMAIL_CLIENT_ID,
-    clientSecret: process.env.EMAIL_CLIENT_SECRET,
-    refreshToken: process.env.EMAIL_REFRESH_TOKEN,
-    accessToken: process.env.EMAIL_ACCESS_TOKEN,
+    appPassword: process.env.EMAIL_APP_PASSWORD,
   },
 
   // File Upload Configuration
-  upload: {
-    dir: process.env.UPLOAD_DIR || "public/uploads",
-    maxFileSize: parseInt(process.env.MAX_FILE_SIZE || "5242880"), // 5MB
+  file: {
+    maxFileSize: parseInt(process.env.MAX_FILE_SIZE || "5242880"),
     allowedImageTypes: process.env.ALLOWED_IMAGE_TYPES?.split(",") || [
       "image/jpeg",
       "image/png",
@@ -40,6 +36,17 @@ export const config = {
       "image/webp",
     ],
     imagesPerProduct: parseInt(process.env.IMAGES_PER_PRODUCT || "10"),
+  },
+
+  // MinIO S3 Configuration
+  s3: {
+    endPoint: process.env.NEXT_PUBLIC_MINIO_ENDPOINT || "localhost",
+    port: parseInt(process.env.MINIO_PORT || "9000"),
+    useSSL: process.env.NEXT_PUBLIC_MINIO_USE_SSL === "true",
+    accessKey: process.env.MINIO_ACCESS_KEY || "",
+    secretKey: process.env.MINIO_SECRET_KEY || "",
+    bucket: process.env.NEXT_PUBLIC_MINIO_BUCKET || "teach-easy",
+    region: process.env.MINIO_REGION || "us-east-1",
   },
 
   // Application Configuration

@@ -47,15 +47,15 @@ export default function OrderHistory({ user }: OrderHistoryProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "delivered":
-        return "bg-green-100 text-green-800";
+        return "bg-primary/10 text-primary";
       case "shipped":
-        return "bg-blue-100 text-blue-800";
+        return "bg-accent text-accent-foreground";
       case "processing":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-secondary text-secondary-foreground";
       case "cancelled":
-        return "bg-red-100 text-red-800";
+        return "bg-destructive/10 text-destructive";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-muted-foreground";
     }
   };
 
@@ -76,20 +76,22 @@ export default function OrderHistory({ user }: OrderHistoryProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-gray-900">Order History</h2>
-        <div className="text-sm text-gray-600">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <h2 className="text-xl font-semibold text-foreground">Order History</h2>
+        <div className="text-sm text-muted-foreground">
           Total Orders: {user.stats?.totalOrders || 0}
         </div>
       </div>
 
       {orders.length === 0 ? (
         <div className="text-center py-12">
-          <div className="text-gray-400 text-6xl mb-4">📦</div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <div className="text-muted-foreground text-4xl sm:text-6xl mb-4">
+            📦
+          </div>
+          <h3 className="text-lg font-medium text-foreground mb-2">
             No orders yet
           </h3>
-          <p className="text-gray-600 mb-6">
+          <p className="text-muted-foreground mb-6 max-w-md mx-auto">
             You haven&apos;t placed any orders yet. Start shopping to see your
             orders here.
           </p>
@@ -100,18 +102,18 @@ export default function OrderHistory({ user }: OrderHistoryProps) {
           {orders.map((order) => (
             <div
               key={order.id}
-              className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+              className="bg-card border border-border rounded-lg p-4 sm:p-6 hover:shadow-md transition-shadow"
             >
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-4">
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-lg font-medium text-foreground truncate">
                     Order #{order.id}
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     Placed on {new Date(order.date).toLocaleDateString()}
                   </p>
                 </div>
-                <div className="text-right">
+                <div className="flex flex-col sm:items-end gap-2">
                   <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
                       order.status
@@ -119,14 +121,14 @@ export default function OrderHistory({ user }: OrderHistoryProps) {
                   >
                     {getStatusText(order.status)}
                   </span>
-                  <p className="text-lg font-semibold text-gray-900 mt-1">
+                  <p className="text-lg font-semibold text-foreground">
                     ৳{order.total.toLocaleString()}
                   </p>
                 </div>
               </div>
 
-              <div className="border-t border-gray-200 pt-4">
-                <h4 className="text-sm font-medium text-gray-900 mb-2">
+              <div className="border-t border-border pt-4">
+                <h4 className="text-sm font-medium text-foreground mb-2">
                   Items ({order.items.length})
                 </h4>
                 <div className="space-y-2">
@@ -135,10 +137,10 @@ export default function OrderHistory({ user }: OrderHistoryProps) {
                       key={index}
                       className="flex justify-between items-center text-sm"
                     >
-                      <span className="text-gray-600">
+                      <span className="text-muted-foreground truncate pr-2">
                         {item.name} × {item.quantity}
                       </span>
-                      <span className="font-medium text-gray-900">
+                      <span className="font-medium text-foreground flex-shrink-0">
                         ৳{item.price.toLocaleString()}
                       </span>
                     </div>
@@ -146,8 +148,8 @@ export default function OrderHistory({ user }: OrderHistoryProps) {
                 </div>
               </div>
 
-              <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
-                <div className="flex space-x-3">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mt-4 pt-4 border-t border-border">
+                <div className="flex flex-wrap gap-2">
                   <Button variant="outline" size="sm">
                     View Details
                   </Button>
@@ -163,7 +165,9 @@ export default function OrderHistory({ user }: OrderHistoryProps) {
                   )}
                 </div>
                 {order.status === "delivered" && (
-                  <Button size="sm">Reorder</Button>
+                  <Button size="sm" className="w-full sm:w-auto">
+                    Reorder
+                  </Button>
                 )}
               </div>
             </div>
@@ -173,41 +177,49 @@ export default function OrderHistory({ user }: OrderHistoryProps) {
 
       {/* Order Summary */}
       {orders.length > 0 && (
-        <div className="bg-gray-50 p-6 rounded-lg">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">
+        <div className="bg-muted p-4 sm:p-6 rounded-lg">
+          <h3 className="text-lg font-medium text-foreground mb-4">
             Order Summary
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-xl sm:text-2xl font-bold text-foreground">
                 {orders.length}
               </div>
-              <div className="text-sm text-gray-600">Total Orders</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">
+                Total Orders
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-xl sm:text-2xl font-bold text-foreground">
                 {orders.filter((o) => o.status === "delivered").length}
               </div>
-              <div className="text-sm text-gray-600">Delivered</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">
+                Delivered
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-xl sm:text-2xl font-bold text-foreground">
                 ৳
                 {orders
                   .reduce((sum, order) => sum + order.total, 0)
                   .toLocaleString()}
               </div>
-              <div className="text-sm text-gray-600">Total Spent</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">
+                Total Spent
+              </div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900">
+              <div className="text-xl sm:text-2xl font-bold text-foreground">
                 ৳
                 {Math.round(
                   orders.reduce((sum, order) => sum + order.total, 0) /
                     orders.length
                 ).toLocaleString()}
               </div>
-              <div className="text-sm text-gray-600">Avg. Order Value</div>
+              <div className="text-xs sm:text-sm text-muted-foreground">
+                Avg. Order Value
+              </div>
             </div>
           </div>
         </div>

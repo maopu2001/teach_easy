@@ -157,3 +157,40 @@ export async function uploadAvatar(userId: string, avatarUrl: string) {
     };
   }
 }
+
+export async function deleteAvatar(userId: string) {
+  try {
+    await connectDB();
+
+    const user = await User.findById(userId);
+
+    if (!user)
+      return {
+        success: false,
+        message: "User not found",
+      };
+
+    const currentAvatar = user.avatar;
+
+    await User.findByIdAndUpdate(userId, { $unset: { avatar: "" } });
+
+    if (!currentAvatar)
+      return {
+        success: true,
+        message: "No avatar to delete",
+      };
+
+    revalidatePath("/profile");
+
+    return {
+      success: true,
+      message: "Avatar deleted successfully",
+    };
+  } catch (error: any) {
+    console.error("Error deleting avatar:", error);
+    return {
+      success: false,
+      message: error.message || "Failed to delete avatar",
+    };
+  }
+}

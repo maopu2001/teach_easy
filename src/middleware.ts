@@ -23,8 +23,6 @@ export async function middleware(req: NextRequest) {
     });
     const isAuthenticated = token?.sub !== undefined;
 
-    console.log(token, isAuthenticated, isAuthPage);
-
     if (isAuthenticated && isAuthPage)
       return NextResponse.redirect(new URL("/", req.url));
 

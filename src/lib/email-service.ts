@@ -45,11 +45,8 @@ class EmailService {
       this.transporter = createTransport({
         service: "gmail",
         auth: {
-          type: "OAuth2",
           user: config.email.user,
-          clientId: config.email.clientId,
-          clientSecret: config.email.clientSecret,
-          refreshToken: config.email.refreshToken,
+          pass: config.email.appPassword,
         },
       });
     } catch (error) {

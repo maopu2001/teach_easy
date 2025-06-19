@@ -13,7 +13,7 @@ export default function GoogleSignInButton() {
 
     try {
       await signIn("google", {
-        callbackUrl: "/",
+        redirectTo: "/profile",
       });
     } catch {
       toast.error("An error occurred while signing in with Google");

@@ -20,6 +20,7 @@ import { useState, useRef, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Separator } from "../ui/separator";
+import getPublicUrl from "@/lib/getPublicUrl";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -53,7 +54,10 @@ const Header = () => {
       >
         {
           <Avatar className="size-6">
-            <AvatarImage src={session?.user?.image as string} />
+            <AvatarImage
+              src={getPublicUrl(session?.user?.image)}
+              alt={session?.user?.name as string}
+            />
             <AvatarFallback>
               {session?.user?.name?.charAt(0) || <User className="size-4" />}
             </AvatarFallback>

@@ -55,11 +55,13 @@ export default function SecuritySettings({ user }: SecuritySettingsProps) {
 
   return (
     <div className="space-y-8">
-      <h2 className="text-xl font-semibold text-gray-900">Security Settings</h2>
+      <h2 className="text-xl font-semibold text-foreground">
+        Security Settings
+      </h2>
 
       {/* Password Change */}
-      <div className="bg-gray-50 p-6 rounded-lg">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">
+      <div className="bg-muted p-4 sm:p-6 rounded-lg">
+        <h3 className="text-lg font-medium text-foreground mb-4">
           Change Password
         </h3>
         <Form {...form}>
@@ -91,7 +93,11 @@ export default function SecuritySettings({ user }: SecuritySettingsProps) {
               required
             />
 
-            <Button type="submit" disabled={loading}>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full sm:w-auto"
+            >
               {loading ? "Updating..." : "Update Password"}
             </Button>
           </form>
@@ -99,25 +105,25 @@ export default function SecuritySettings({ user }: SecuritySettingsProps) {
       </div>
 
       {/* Security Information */}
-      <div className="bg-gray-50 p-6 rounded-lg">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">
+      <div className="bg-muted p-4 sm:p-6 rounded-lg">
+        <h3 className="text-lg font-medium text-foreground mb-4">
           Security Information
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Account Created
             </label>
-            <p className="text-gray-900">
+            <p className="text-muted-foreground text-sm">
               {new Date(user.createdAt).toLocaleDateString()}
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Last Login
             </label>
-            <p className="text-gray-900">
+            <p className="text-muted-foreground text-sm">
               {user.lastLoginAt
                 ? new Date(user.lastLoginAt).toLocaleString()
                 : "Never"}
@@ -125,120 +131,41 @@ export default function SecuritySettings({ user }: SecuritySettingsProps) {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Login Attempts
             </label>
-            <p className="text-gray-900">{user.loginAttempts || 0}</p>
+            <p className="text-muted-foreground text-sm">
+              {user.loginAttempts || 0}
+            </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-foreground mb-1">
               Account Status
             </label>
-            <div className="space-y-1">
+            <div className="space-y-2">
               <span
                 className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                   user.isActive
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800"
+                    ? "bg-primary/10 text-primary"
+                    : "bg-destructive/10 text-destructive"
                 }`}
               >
                 {user.isActive ? "Active" : "Inactive"}
               </span>
               {user.isBlocked && (
                 <div>
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-destructive/10 text-destructive">
                     Blocked
                   </span>
                   {user.blockReason && (
-                    <p className="text-sm text-red-600 mt-1">
+                    <p className="text-sm text-destructive mt-1">
                       Reason: {user.blockReason}
                     </p>
                   )}
                 </div>
               )}
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Two-Factor Authentication */}
-      <div className="bg-gray-50 p-6 rounded-lg">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">
-          Two-Factor Authentication
-        </h3>
-        <p className="text-gray-600 mb-4">
-          Add an extra layer of security to your account by enabling two-factor
-          authentication.
-        </p>
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="font-medium text-gray-900">2FA Status</p>
-            <p className="text-sm text-gray-600">
-              Two-factor authentication is currently disabled
-            </p>
-          </div>
-          <Button variant="outline">Enable 2FA</Button>
-        </div>
-      </div>
-
-      {/* Active Sessions */}
-      <div className="bg-gray-50 p-6 rounded-lg">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">
-          Active Sessions
-        </h3>
-        <p className="text-gray-600 mb-4">
-          These are the devices that are currently logged into your account.
-        </p>
-        <div className="space-y-3">
-          <div className="flex items-center justify-between p-3 bg-white rounded border">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                🖥️
-              </div>
-              <div>
-                <p className="font-medium text-gray-900">Current Session</p>
-                <p className="text-sm text-gray-600">
-                  Chrome on macOS • Last active now
-                </p>
-              </div>
-            </div>
-            <span className="text-sm text-green-600 font-medium">Active</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Danger Zone */}
-      <div className="bg-red-50 p-6 rounded-lg border border-red-200">
-        <h3 className="text-lg font-medium text-red-900 mb-4">Danger Zone</h3>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium text-red-900">Deactivate Account</p>
-              <p className="text-sm text-red-700">
-                Temporarily disable your account. You can reactivate it anytime.
-              </p>
-            </div>
-            <Button
-              variant="outline"
-              className="border-red-300 text-red-700 hover:bg-red-50"
-            >
-              Deactivate
-            </Button>
-          </div>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium text-red-900">Delete Account</p>
-              <p className="text-sm text-red-700">
-                Permanently delete your account and all associated data.
-              </p>
-            </div>
-            <Button
-              variant="outline"
-              className="border-red-300 text-red-700 hover:bg-red-50"
-            >
-              Delete Account
-            </Button>
           </div>
         </div>
       </div>

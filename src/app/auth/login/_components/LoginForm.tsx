@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -18,7 +17,6 @@ const loginSchema = z.object({
 export type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<LoginFormData>({
@@ -33,19 +31,11 @@ export default function LoginForm() {
     setIsLoading(true);
 
     try {
-      const result = await signIn("credentials", {
+      await signIn("credentials", {
         email: data.email,
         password: data.password,
-        redirect: false,
+        redirectTo: "/profile",
       });
-
-      if (result?.error) {
-        toast.error("Invalid email or password");
-      } else if (result?.ok) {
-        toast.success("Signed in successfully!");
-        router.push("/");
-        router.refresh();
-      }
     } catch {
       toast.error("An error occurred while signing in");
     } finally {
