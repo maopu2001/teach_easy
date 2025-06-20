@@ -43,7 +43,10 @@ class EmailService {
   private initializeTransporter(): void {
     try {
       this.transporter = createTransport({
-        service: "gmail",
+        // service: "gmail",
+        host: config.email.host,
+        port: config.email.port,
+        secure: config.email.secure,
         auth: {
           user: config.email.user,
           pass: config.email.appPassword,
@@ -64,7 +67,7 @@ class EmailService {
 
     try {
       const mailOptions = {
-        from: config.email.user,
+        from: `"Teach Easy" <${config.email.user}>`,
         to: Array.isArray(options.to) ? options.to.join(", ") : options.to,
         subject: options.subject,
         text: options.text,

@@ -22,6 +22,9 @@ export const config = {
 
   // Email Configuration
   email: {
+    host: process.env.EMAIL_HOST || "smtp.gmail.com",
+    port: parseInt(process.env.EMAIL_PORT || "465"),
+    secure: process.env.EMAIL_SECURE === "true",
     user: process.env.EMAIL_USER,
     appPassword: process.env.EMAIL_APP_PASSWORD,
   },
