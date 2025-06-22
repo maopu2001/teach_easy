@@ -1,5 +1,5 @@
 "use client";
-import { ShoppingCart, Trash2 } from "lucide-react";
+import { ShoppingCart, Trash2, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { useCart } from "@/store/cartStore";
 import { useState, useMemo } from "react";
@@ -138,20 +138,19 @@ const Cart = ({ trigger }: CartProps = {}) => {
         side="right"
         className="sm:max-w-md w-[90vw] max-w-[400px] h-full flex flex-col p-0"
       >
-        <SheetHeader className="flex flex-row justify-between items-center px-6 pt-6 pb-2 border-b">
+        <SheetHeader className="flex flex-row justify-between items-center px-6 py-4 border-b">
           <SheetTitle className="text-lg font-semibold">
             Shopping Cart
           </SheetTitle>
-          {!isCartEmpty && (
-            <Button
-              size="sm"
-              onClick={clearCart}
-              className="text-destructive bg-destructive/20 hover:text-destructive hover:bg-destructive/10 p-2"
-            >
-              <Trash2 className="size-4 mr-2" />
-              Clear All
-            </Button>
-          )}
+          <Button
+            asChild
+            className="size-8 p-1 rounded-full"
+            variant="ghost"
+            size="icon"
+            onClick={() => setOpen(false)}
+          >
+            <X />
+          </Button>
         </SheetHeader>
         <div className="flex-1 space-y-4 overflow-auto px-6">
           {isCartEmpty ? (
@@ -258,6 +257,15 @@ const Cart = ({ trigger }: CartProps = {}) => {
 
         {!isCartEmpty && (
           <SheetFooter>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearCart}
+              className="text-destructive bg-destructive/20 hover:text-destructive hover:bg-destructive/10 p-2 mt-2"
+            >
+              <Trash2 className="size-4 lr-2" /> Clear All
+            </Button>
+
             <div className="space-y-4 px-6 pb-6">
               <div className="flex justify-between items-center pt-4 border-t">
                 <span className="font-medium">Total:</span>

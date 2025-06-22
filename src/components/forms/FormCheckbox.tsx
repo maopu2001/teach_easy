@@ -17,7 +17,7 @@ interface FormCheckboxProps<
 > {
   control: Control<TFieldValues>;
   name: TName;
-  label?: string;
+  label?: string | React.ReactNode;
   description?: string;
   className?: string;
   disabled?: boolean;

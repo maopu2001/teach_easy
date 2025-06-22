@@ -47,12 +47,6 @@ export default function CheckoutPage() {
   const tax = subtotal * taxRate;
   const total = subtotal + shippingCost + tax;
 
-  // Wait for cart to be hydrated from localStorage
-  useEffect(() => {
-    if (_hasHydrated) {
-    }
-  }, [cart, _hasHydrated]);
-
   // Redirect if cart is empty (only after hydration)
   useEffect(() => {
     if (_hasHydrated && cart.length === 0) {
@@ -89,9 +83,7 @@ export default function CheckoutPage() {
       setOrderData({ ...orderData, payment: stepData as PaymentFormData });
     }
 
-    if (step < 4) {
-      setCurrentStep(step + 1);
-    }
+    if (step < 4) setCurrentStep(step + 1);
   };
 
   const handlePlaceOrder = async () => {

@@ -1,5 +1,4 @@
 "use client";
-
 import { Card, CardContent } from "@/components/ui/card";
 import {
   FormControl,
@@ -8,7 +7,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Control } from "react-hook-form";
-import { Truck, Clock, ShoppingBag } from "lucide-react";
+import { Truck, ShoppingBag } from "lucide-react";
 import { ShippingFormData } from "@/lib/checkout-schemas";
 
 interface ShippingMethodSelectorProps {
@@ -25,13 +24,6 @@ export default function ShippingMethodSelector({
       description: "5-7 business days",
       price: 59,
       icon: Truck,
-    },
-    {
-      id: "express",
-      name: "Express Shipping",
-      description: "2-3 business days",
-      price: 149,
-      icon: Clock,
     },
     {
       id: "pickup",

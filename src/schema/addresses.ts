@@ -7,13 +7,6 @@ export const addressSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-
-    label: {
-      type: String,
-      trim: true,
-      maxlength: 50, // Custom label like "Mom's House", "Office", etc.
-    },
-
     // Contact Information
     fullName: {
       type: String,
@@ -82,11 +75,7 @@ export const addressSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    upazila: {
-      type: String,
-      trim: true,
-    },
-    city: {
+    cityOrUpazila: {
       type: String,
       required: true,
       trim: true,
@@ -132,7 +121,7 @@ addressSchema.index({ postalCode: 1 });
 addressSchema.virtual("fullAddress").get(function () {
   let address = this.addressLine;
   if (this.landmark) address += `, ${this.landmark}`;
-  if (this.city) address += `, ${this.city}`;
+  if (this.cityOrUpazila) address += `, ${this.cityOrUpazila}`;
   address += `, ${this.district}, ${this.division}`;
   if (this.postalCode) address += ` ${this.postalCode}`;
   return address;
@@ -144,7 +133,7 @@ addressSchema.virtual("deliveryAddress").get(function () {
   address += `${this.phone}`;
   if (this.alternatePhone) address += ` / ${this.alternatePhone}`;
   address += `\n${this.addressLine}`;
-  if (this.city) address += `\n${this.city}`;
+  if (this.cityOrUpazila) address += `\n${this.cityOrUpazila}`;
   address += `\n${this.district}, ${this.division}`;
   if (this.postalCode) address += ` - ${this.postalCode}`;
   return address;
@@ -186,6 +175,10 @@ addressSchema.methods.markAsUsed = function () {
   this.lastUsedAt = new Date();
   this.usageCount += 1;
   return this.save();
+};
+
+addressSchema.statics.getAddressesByUser = function (userId: string) {
+  return this.find({ user: userId }).sort({ createdAt: -1 });
 };
 
 // Static method to get user's default address

@@ -1,5 +1,5 @@
 "use client";
-import { Heart, ShoppingCart, Trash2 } from "lucide-react";
+import { Heart, ShoppingCart, Trash2, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { useWishlist } from "@/store/wishlistStore";
 import { useCart } from "@/store/cartStore";
@@ -78,18 +78,17 @@ const Wishlist = ({ trigger }: WishlistProps = {}) => {
         side="right"
         className="sm:max-w-md w-[90vw] max-w-[400px] h-full flex flex-col p-0"
       >
-        <SheetHeader className="flex flex-row justify-between items-center px-6 pt-6 pb-2 border-b">
+        <SheetHeader className="flex flex-row justify-between items-center px-6 py-4 border-b">
           <SheetTitle className="text-lg font-semibold">My Wishlist</SheetTitle>
-          {!isWishlistEmpty && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={clearWishlist}
-              className="text-destructive bg-destructive/20 hover:text-destructive hover:bg-destructive/10 p-2"
-            >
-              <Trash2 className="size-4 lr-2" /> Clear All
-            </Button>
-          )}
+          <Button
+            asChild
+            className="size-8 p-1 rounded-full"
+            variant="ghost"
+            size="icon"
+            onClick={() => setOpen(false)}
+          >
+            <X />
+          </Button>
         </SheetHeader>
         <div className="flex-1 space-y-4 overflow-auto mb-4 px-6">
           {isWishlistEmpty ? (
@@ -195,6 +194,16 @@ const Wishlist = ({ trigger }: WishlistProps = {}) => {
             })
           )}
         </div>
+        {!isWishlistEmpty && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={clearWishlist}
+            className="text-destructive bg-destructive/20 hover:text-destructive hover:bg-destructive/10 p-2 m-2"
+          >
+            <Trash2 className="size-4 lr-2" /> Clear All
+          </Button>
+        )}
       </SheetContent>
     </Sheet>
   );

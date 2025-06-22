@@ -24,7 +24,7 @@ export const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
       match: [
-        /^(\+880|880|0)?1[3-9]\d{8}$/,
+        /^(\+88|88)?01[3-9]\d{8}$/,
         "Please enter a valid Bangladeshi phone number",
       ],
     },

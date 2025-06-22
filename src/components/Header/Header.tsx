@@ -64,7 +64,9 @@ const Header = () => {
           </Avatar>
         }
 
-        <ChevronDown className="h-3 w-3" />
+        <ChevronDown
+          className={`size-4 ${userMenuOpen ? "rotate-180" : "rotate-0"}`}
+        />
       </Button>
       {userMenuOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-background border border-border shadow-lg z-50 pt-1 overflow-hidden rounded-md">

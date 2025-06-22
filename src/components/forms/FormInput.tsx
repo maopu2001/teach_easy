@@ -16,7 +16,7 @@ interface FormInputProps<
 > {
   control: Control<TFieldValues>;
   name: TName;
-  label?: string;
+  label?: string | React.ReactNode;
   placeholder?: string;
   type?: "text" | "email" | "password" | "number" | "tel" | "url";
   autoComplete?: string;

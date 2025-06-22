@@ -20,8 +20,7 @@ export default function ShippingInfoCard({
   const getShippingMethodDisplay = (method: string) => {
     const methods: Record<string, { name: string; time: string }> = {
       standard: { name: "Standard Delivery", time: "5-7 business days" },
-      express: { name: "Express Delivery", time: "2-3 business days" },
-      overnight: { name: "Overnight Delivery", time: "Next business day" },
+      overnight: { name: "Overnight Delivery", time: "1 business day" },
     };
     return methods[method] || { name: method, time: "" };
   };

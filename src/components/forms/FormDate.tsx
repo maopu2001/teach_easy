@@ -23,7 +23,7 @@ interface FormDateProps<
 > {
   control: Control<TFieldValues>;
   name: TName;
-  label?: string;
+  label?: string | React.ReactNode;
   formatStr?: string;
   description?: string;
   className?: string;

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { BookOpen, Star } from "lucide-react";
+import { ShoppingBag, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -28,7 +28,7 @@ export default function HeroSection() {
                   size="lg"
                   className="bg-primary hover:bg-primary/70 text-white"
                 >
-                  <BookOpen className="h-5 w-5 mr-2" />
+                  <ShoppingBag className="h-5 w-5 mr-2" />
                   Browse Products
                 </Button>
               </Link>

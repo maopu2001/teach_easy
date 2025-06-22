@@ -18,7 +18,7 @@ export default function CheckoutSteps({ currentStep }: CheckoutStepsProps) {
     <div className="w-full">
       <div className="flex items-center justify-between">
         {steps.map((step, index) => (
-          <div key={step.id} className="flex items-center flex-1 ">
+          <div key={step.id} className="flex items-center sm:flex-1">
             <div className="flex items-center justify-center flex-col sm:flex-row">
               <div
                 className={`

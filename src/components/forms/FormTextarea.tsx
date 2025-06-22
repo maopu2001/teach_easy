@@ -17,7 +17,7 @@ interface FormTextareaProps<
 > {
   control: Control<TFieldValues>;
   name: TName;
-  label?: string;
+  label?: string | React.ReactNode;
   placeholder?: string;
   className?: string;
   disabled?: boolean;

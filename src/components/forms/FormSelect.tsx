@@ -28,7 +28,7 @@ interface FormSelectProps<
 > {
   control: Control<TFieldValues>;
   name: TName;
-  label?: string;
+  label?: string | React.ReactNode;
   placeholder?: string;
   options: SelectOption[];
   className?: string;
