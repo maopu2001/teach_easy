@@ -5,6 +5,8 @@ import ProfileInfo from "./ProfileInfo";
 import AccountSettings from "./AccountSettings";
 import OrderHistory from "./OrderHistory";
 import SecuritySettings from "./SecuritySettings";
+import Addresses from "./Addresses";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface ProfileTabsProps {
   user: any;
@@ -12,18 +14,25 @@ interface ProfileTabsProps {
 
 const tabs = [
   { id: "profile", name: "Profile Information", icon: "👤" },
+  { id: "addresses", name: "Addresses", icon: "🏠" },
   { id: "settings", name: "Account Settings", icon: "⚙️" },
   { id: "orders", name: "Order History", icon: "📦" },
   { id: "security", name: "Security", icon: "🔒" },
 ];
 
 export default function ProfileTabs({ user }: ProfileTabsProps) {
-  const [activeTab, setActiveTab] = useState("profile");
+  const router = useRouter();
+  const query = useSearchParams();
+  const [activeTab, setActiveTab] = useState(
+    (query.get("tab") as string) || "profile"
+  );
 
   const renderTabContent = () => {
     switch (activeTab) {
       case "profile":
         return <ProfileInfo user={user} />;
+      case "addresses":
+        return <Addresses user={user} />;
       case "settings":
         return <AccountSettings user={user} />;
       case "orders":
@@ -35,6 +44,11 @@ export default function ProfileTabs({ user }: ProfileTabsProps) {
     }
   };
 
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    router.push(`/profile?tab=${tabId}`);
+  };
+
   return (
     <div className="flex flex-col lg:flex-row">
       {/* Tab Navigation */}
@@ -43,7 +57,7 @@ export default function ProfileTabs({ user }: ProfileTabsProps) {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => handleTabChange(tab.id)}
               className={`flex items-center px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${
                 activeTab === tab.id
                   ? "bg-primary text-primary-foreground"

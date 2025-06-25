@@ -70,3 +70,12 @@ export const districts = {
   ],
   Sylhet: ["Habiganj", "Moulvibazar", "Sunamganj", "Sylhet"],
 };
+
+export type Division =
+  | "Barisal"
+  | "Chattogram"
+  | "Dhaka"
+  | "Khulna"
+  | "Mymensingh"
+  | "Rajshahi"
+  | "Sylhet";

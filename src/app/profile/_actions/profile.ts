@@ -1,9 +1,10 @@
 "use server";
 
 import { connectDB } from "@/lib/connectDb";
-import { User } from "@/schema";
+import { Address, User } from "@/schema";
 import { revalidatePath } from "next/cache";
 import { IUser } from "@/types/user";
+import { addressToObject, userToObject } from "@/lib/mongoToObj";
 
 export interface ProfileFormData {
   fullName: string;
@@ -29,22 +30,13 @@ export async function getUserById(userId: string): Promise<IUser | null> {
   try {
     await connectDB();
 
-    const user = await User.findById(userId).lean();
+    const user = await User.findById(userId);
 
     if (!user) {
       return null;
     }
 
-    // Convert MongoDB _id to string and format dates
-    return {
-      ...user,
-      _id: (user as any)._id.toString(),
-      createdAt: (user as any).createdAt?.toISOString(),
-      updatedAt: (user as any).updatedAt?.toISOString(),
-      lastLoginAt: (user as any).lastLoginAt?.toISOString(),
-      lastActiveAt: (user as any).lastActiveAt?.toISOString(),
-      dateOfBirth: (user as any).dateOfBirth?.toISOString(),
-    } as unknown as IUser;
+    return userToObject(user);
   } catch (error) {
     console.error("Error fetching user:", error);
     return null;
@@ -191,6 +183,148 @@ export async function deleteAvatar(userId: string) {
     return {
       success: false,
       message: error.message || "Failed to delete avatar",
+    };
+  }
+}
+
+export async function getAddresses(userId: string) {
+  try {
+    await connectDB();
+
+    const addresses = await Address.find({ user: userId });
+
+    if (!addresses || addresses.length === 0) {
+      return {
+        result: false,
+        message: "No addresses found",
+      };
+    }
+
+    return {
+      result: true,
+      addresses: addresses.map(addressToObject),
+    };
+  } catch (error: any) {
+    return {
+      result: false,
+      message: error.message || "Failed to fetch addresses",
+    };
+  }
+}
+
+export async function addAddress(userId: string, addressData: any) {
+  try {
+    await connectDB();
+
+    if (addressData.isDefault)
+      await Address.updateMany(
+        { user: userId, isDefault: true },
+        { $set: { isDefault: false } }
+      );
+
+    const existingAddress = await Address.findOne({ user: userId });
+
+    const newAddress = new Address({
+      user: userId,
+      ...addressData,
+      isDefault: existingAddress ? addressData.isDefault : true,
+    });
+
+    await newAddress.save();
+
+    revalidatePath("/profile");
+
+    return {
+      success: true,
+      message: "Address added successfully",
+      address: addressToObject(newAddress),
+    };
+  } catch (error: any) {
+    console.error("Error adding address:", error);
+    return {
+      success: false,
+      message: error.message || "Failed to add address",
+    };
+  }
+}
+
+export async function updateAddress(
+  userId: string,
+  addressId: string,
+  addressData: any
+) {
+  try {
+    await connectDB();
+
+    if (addressData.isDefault)
+      await Address.updateMany(
+        { user: userId, isDefault: true },
+        { $set: { isDefault: false } }
+      );
+
+    const updatedAddress = await Address.findByIdAndUpdate(
+      addressId,
+      { ...addressData },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedAddress) {
+      return {
+        success: false,
+        message: "Address not found",
+      };
+    }
+
+    revalidatePath("/profile");
+
+    return {
+      success: true,
+      message: "Address updated successfully",
+      address: addressToObject(updatedAddress),
+    };
+  } catch (error: any) {
+    console.error("Error updating address:", error);
+    return {
+      success: false,
+      message: error.message || "Failed to update address",
+    };
+  }
+}
+
+export async function deleteAddress(userId: string, addressId: string) {
+  try {
+    await connectDB();
+
+    const deletedAddress = await Address.findByIdAndDelete(addressId);
+
+    const existingDefaultAddress = await Address.findOne({
+      user: userId,
+      isDefault: true,
+    });
+
+    if (!existingDefaultAddress)
+      await Address.updateOne({ user: userId }, { isDefault: true });
+
+    revalidatePath("/profile");
+
+    if (!deletedAddress) {
+      return {
+        success: false,
+        message: "Address not found",
+      };
+    }
+
+    revalidatePath("/profile");
+
+    return {
+      success: true,
+      message: "Address deleted successfully",
+    };
+  } catch (error: any) {
+    console.error("Error deleting address:", error);
+    return {
+      success: false,
+      message: error.message || "Failed to delete address",
     };
   }
 }

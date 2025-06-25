@@ -99,7 +99,7 @@ export async function handleGoogleSignUp(
     name: string;
     image?: string;
   },
-  role: "customer" | "teacher" = "customer"
+  role: "customer" | "teacher" | "admin" = "customer"
 ) {
   try {
     await connectDB();

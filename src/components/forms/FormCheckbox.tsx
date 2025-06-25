@@ -43,7 +43,7 @@ export function FormCheckbox<
       render={({ field }) => (
         <FormItem
           className={cn(
-            "flex flex-row items-start space-x-3 space-y-0",
+            "flex flex-row items-start space-x-3 space-y-0 w-full",
             className
           )}
         >
@@ -54,9 +54,9 @@ export function FormCheckbox<
               disabled={disabled}
             />
           </FormControl>
-          <div className="space-y-1 leading-none">
+          <div className="space-y-1 leading-none w-full">
             {label && (
-              <FormLabel className="text-sm font-normal cursor-pointer">
+              <FormLabel className="text-sm font-normal cursor-pointer w-full">
                 {label}
                 {required && <span className="text-red-500 ml-1">*</span>}
               </FormLabel>

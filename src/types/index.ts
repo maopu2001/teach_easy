@@ -17,6 +17,3 @@ export * from "./coupon";
 
 // Review types
 export * from "./review";
-
-// Inventory types (placeholder)
-export * from "./inventory";

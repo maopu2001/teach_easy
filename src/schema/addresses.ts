@@ -59,16 +59,6 @@ export const addressSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      enum: [
-        "Dhaka",
-        "Chittagong",
-        "Rajshahi",
-        "Khulna",
-        "Barisal",
-        "Sylhet",
-        "Rangpur",
-        "Mymensingh",
-      ],
     },
     district: {
       type: String,
@@ -113,7 +103,10 @@ export const addressSchema = new mongoose.Schema(
 );
 
 // Indexes
-addressSchema.index({ user: 1, isDefault: 1 });
+addressSchema.index(
+  { user: 1, isDefault: 1 },
+  { unique: true, partialFilterExpression: { isDefault: true } }
+);
 addressSchema.index({ division: 1, district: 1, city: 1 });
 addressSchema.index({ postalCode: 1 });
 
@@ -137,37 +130,6 @@ addressSchema.virtual("deliveryAddress").get(function () {
   address += `\n${this.district}, ${this.division}`;
   if (this.postalCode) address += ` - ${this.postalCode}`;
   return address;
-});
-
-// Pre-save middleware
-addressSchema.pre("save", async function (next) {
-  // Ensure only one default address per user
-  if (this.isDefault && this.isModified("isDefault")) {
-    await mongoose.model("Address").updateMany(
-      {
-        user: this.user,
-        _id: { $ne: this._id },
-        isDefault: true,
-      },
-      { isDefault: false }
-    );
-  }
-
-  // If this is the first address for the user, make it default
-  if (this.isNew) {
-    const existingAddresses = await mongoose
-      .model("Address")
-      .countDocuments({ user: this.user });
-
-    if (existingAddresses === 0) this.isDefault = true;
-  }
-
-  // Update usage count and last used date if this is being used for an order
-  if (this.isModified("lastUsedAt")) {
-    this.usageCount += 1;
-  }
-
-  next();
 });
 
 // Instance method to mark as used

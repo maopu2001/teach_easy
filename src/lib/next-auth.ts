@@ -55,7 +55,8 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           const cookieStore = await cookies();
           const selectedRole = cookieStore.get("pending-role")?.value;
 
-          const role = (selectedRole as "customer" | "teacher") || "customer";
+          const role =
+            (selectedRole as "customer" | "teacher" | "admin") || "customer";
 
           const result = await handleGoogleSignUp(
             {
@@ -67,6 +68,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           );
 
           user.id = result.userId;
+          (user as any).role = role;
 
           cookieStore.delete("pending-role");
 
