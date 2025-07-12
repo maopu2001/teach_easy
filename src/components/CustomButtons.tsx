@@ -54,7 +54,9 @@ export const AddToCartButton = ({
             ? "Out of Stock"
             : isMaxReached
             ? `Max ${config.app.maxItems} items`
-            : "Add to Cart"}
+            : `Add to Cart ${
+                currentQuantity > 0 ? `(${currentQuantity})` : ""
+              }`}
         </span>
       </div>
     </Button>

@@ -7,17 +7,18 @@ import OrderHistory from "./OrderHistory";
 import SecuritySettings from "./SecuritySettings";
 import Addresses from "./Addresses";
 import { useRouter, useSearchParams } from "next/navigation";
+import { CircleUser, Home, Lock, Settings, Truck } from "lucide-react";
 
 interface ProfileTabsProps {
   user: any;
 }
 
 const tabs = [
-  { id: "profile", name: "Profile Information", icon: "👤" },
-  { id: "addresses", name: "Addresses", icon: "🏠" },
-  { id: "settings", name: "Account Settings", icon: "⚙️" },
-  { id: "orders", name: "Order History", icon: "📦" },
-  { id: "security", name: "Security", icon: "🔒" },
+  { id: "profile", name: "Profile", icon: <CircleUser /> },
+  { id: "addresses", name: "Addresses", icon: <Home /> },
+  { id: "settings", name: "Settings", icon: <Settings /> },
+  { id: "orders", name: "Order History", icon: <Truck /> },
+  { id: "security", name: "Security", icon: <Lock /> },
 ];
 
 export default function ProfileTabs({ user }: ProfileTabsProps) {
@@ -58,14 +59,18 @@ export default function ProfileTabs({ user }: ProfileTabsProps) {
             <button
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
-              className={`flex items-center px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${
+              className={`size-10 flex items-center px-3 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${
                 activeTab === tab.id
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                  ? "w-full justify-center sm:justify-start bg-primary text-primary-foreground"
+                  : "sm:w-auto text-muted-foreground hover:text-foreground hover:bg-accent"
               }`}
             >
               <span className="mr-2 text-base">{tab.icon}</span>
-              <span className="hidden sm:inline">{tab.name}</span>
+              <span
+                className={activeTab === tab.id ? "inline" : "hidden sm:inline"}
+              >
+                {tab.name}
+              </span>
             </button>
           ))}
         </nav>

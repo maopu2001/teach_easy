@@ -18,14 +18,16 @@ import {
 
 interface SelectOption {
   value: string;
-  label: string;
+  label: string | React.ReactNode;
   disabled?: boolean;
+  clickable?: React.ReactNode | string;
 }
 
 interface FormSelectProps<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 > {
+  defaultValue?: string;
   control: Control<TFieldValues>;
   name: TName;
   label?: string | React.ReactNode;
@@ -41,6 +43,7 @@ export function FormSelect<
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>
 >({
+  defaultValue,
   control,
   name,
   label,
@@ -65,12 +68,16 @@ export function FormSelect<
           )}
           <Select
             onValueChange={field.onChange}
-            defaultValue={field.value}
+            defaultValue={defaultValue || field.value}
             disabled={disabled}
           >
             <FormControl>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder={placeholder} />
+                <SelectValue placeholder={placeholder}>
+                  {options.find(
+                    (o) => o.value === field.value || o.value === defaultValue
+                  )?.label || placeholder}
+                </SelectValue>
               </SelectTrigger>
             </FormControl>
             <SelectContent>
@@ -80,7 +87,7 @@ export function FormSelect<
                   value={option.value}
                   disabled={option.disabled}
                 >
-                  {option.label}
+                  {option.clickable || option.label}
                 </SelectItem>
               ))}
             </SelectContent>

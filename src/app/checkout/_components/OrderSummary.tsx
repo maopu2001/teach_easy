@@ -1,141 +1,119 @@
 "use client";
 
+import { useCart } from "@/store/cartStore";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { formatCurrency } from "@/lib/formatter";
+import { products } from "@/lib/testProducts";
 import Image from "next/image";
-import { ShoppingBag, Truck, Receipt } from "lucide-react";
-import { Product } from "@/app/products/[id]/_components/ProductClientWrapper";
 
-interface OrderSummaryProps {
-  cartProducts: Product[];
-  productQuantities: Record<string, number>;
-  subtotal: number;
-  shippingCost: number;
-  tax: number;
-  total: number;
-}
+export function OrderSummary({ form }: { form: any }) {
+  const { cart } = useCart();
 
-export default function OrderSummary({
-  cartProducts,
-  productQuantities,
-  subtotal,
-  shippingCost,
-  tax,
-  total,
-}: OrderSummaryProps) {
+  const cartItems = cart.reduce((acc, itemId) => {
+    const product = products.find((p) => p.id === itemId);
+    if (product) {
+      const existingItem = acc.find((item) => item.id === itemId);
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        acc.push({ ...product, quantity: 1 });
+      }
+    }
+    return acc;
+  }, [] as Array<(typeof products)[0] & { quantity: number }>);
+
+  // Calculate totals using actual product prices with discounts
+  const subtotal = cartItems.reduce((sum, item) => {
+    const discountedPrice =
+      item.price - (item.price * item.discountInPercent) / 100;
+    return sum + discountedPrice * item.quantity;
+  }, 0);
+  const shipping = form.watch("delivery.deliveryMethod") === "pickup" ? 0 : 60;
+  const total = subtotal + shipping;
+
   return (
-    <Card className="lg:sticky top-24 px-4 py-6">
-      <CardHeader className="flex items-center pl-2">
-        <ShoppingBag className="size-5" />
-        <CardTitle className="flex items-center gap-2">Order Summary</CardTitle>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <span className="inline-flex items-center justify-center w-6 h-6 bg-primary text-white rounded-full text-sm font-bold">
+            4
+          </span>
+          Order Overview
+        </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Cart Items */}
-        <div className="space-y-3">
-          {cartProducts.map((product) => {
-            if (!product) return null;
+      <CardContent className="space-y-4 px-5">
+        {cartItems.length === 0 ? (
+          <p className="text-gray-500 text-center py-4">Your cart is empty</p>
+        ) : (
+          <>
+            {/* Order Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left py-3 font-medium">Product</th>
+                    <th className="text-right py-3 font-medium">Price</th>
+                    <th className="text-right py-3 font-medium">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {cartItems.map((item) => {
+                    const discountedPrice =
+                      item.price - (item.price * item.discountInPercent) / 100;
+                    const itemTotal = discountedPrice * item.quantity;
 
-            const quantity = productQuantities[product.id] || 1;
-            const discountPrice =
-              product.price - (product.price * product.discountInPercent) / 100;
-            const itemTotal = discountPrice * quantity;
+                    return (
+                      <tr key={item.id} className="border-b">
+                        <td className="py-3 flex items-center space-x-4">
+                          <div className="relative size-16">
+                            <Image
+                              src={item.imageUrl}
+                              alt={item.name}
+                              width={80}
+                              height={80}
+                              className="size-16 object-cover rounded"
+                            />
+                          </div>
+                          <div className="font-medium text-sm">{item.name}</div>
+                        </td>
+                        <td className="pl-3 py-3 text-right text-sm text-nowrap">
+                          {discountedPrice.toFixed(0)}৳ x {item.quantity}
+                        </td>
+                        <td className="pl-3 py-3 text-right font-medium text-nowrap">
+                          {itemTotal.toFixed(0)}৳
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
 
-            return (
-              <div key={product.id} className="flex items-center gap-3">
-                <div className="relative w-12 h-12 rounded-md overflow-hidden bg-muted flex-shrink-0">
-                  <Image
-                    src={product.imageUrl}
-                    alt={product.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium line-clamp-1">
-                    {product.name}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Qty: {quantity}
-                  </p>
-                  {product.discountInPercent > 0 && (
-                    <p className="text-xs text-green-600">
-                      -{product.discountInPercent}% off
-                    </p>
-                  )}
-                </div>
-                <div className="text-sm font-medium">
-                  {formatCurrency(itemTotal)}
-                </div>
+            {/* Summary */}
+            <div className="mt-6 space-y-2">
+              <div className="flex justify-between text-lg">
+                <span>Sub-Total:</span>
+                {subtotal.toFixed(0)}৳
               </div>
-            );
-          })}
-        </div>
 
-        <Separator />
+              <div className="flex justify-between text-base text-gray-600">
+                <span>Shipping:</span>
+                <span>{shipping.toFixed(0)}৳</span>
+              </div>
 
-        {/* Pricing Breakdown */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span>Subtotal</span>
-            <span>{formatCurrency(subtotal)}</span>
-          </div>
+              <Separator />
 
-          <div className="flex justify-between text-sm">
-            <div className="flex items-center gap-1">
-              <Truck className="w-3 h-3" />
-              <span>Shipping</span>
+              <div className="flex justify-between text-xl font-bold">
+                <span>Total:</span>
+                <span>{total.toFixed(0)}৳</span>
+              </div>
             </div>
-            <span>
-              {shippingCost === 0 ? (
-                <span className="text-green-600">FREE</span>
-              ) : (
-                formatCurrency(shippingCost)
-              )}
-            </span>
-          </div>
-
-          <div className="flex justify-between text-sm">
-            <div className="flex items-center gap-1">
-              <Receipt className="w-3 h-3" />
-              <span>Tax (5%)</span>
-            </div>
-            <span>{formatCurrency(tax)}</span>
-          </div>
-
-          {shippingCost === 0 && subtotal < 5000 && (
-            <div className="text-xs text-muted-foreground p-2 bg-muted rounded">
-              Add {formatCurrency(5000 - subtotal)} more for free shipping!
-            </div>
-          )}
-        </div>
-
-        <Separator />
-
-        {/* Total */}
-        <div className="flex justify-between font-semibold text-lg">
-          <span>Total</span>
-          <span>{formatCurrency(total)}</span>
-        </div>
-
-        {/* Security Badge */}
-        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-          <div className="flex items-center gap-2 text-sm text-green-800">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span>Secure checkout protected by SSL encryption</span>
-          </div>
-        </div>
-
-        {/* Money Back Guarantee */}
-        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <div className="text-sm text-blue-800">
-            <p className="font-medium">30-Day Money Back Guarantee</p>
-            <p className="text-xs mt-1">
-              Not satisfied? Return within 30 days for a full refund.
-            </p>
-          </div>
-        </div>
+          </>
+        )}
       </CardContent>
+      <div className="hidden md:block fixed bottom-10 right-10 bg-primary p-5 text-white rounded-xl animate-pulse">
+        {total > 0 && <>Total: {total.toFixed(0)}৳</>}
+      </div>
     </Card>
   );
 }

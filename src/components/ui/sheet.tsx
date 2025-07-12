@@ -6,8 +6,65 @@ import * as SheetPrimitive from "@radix-ui/react-dialog";
 
 import { cn } from "@/lib/utils";
 
-function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
-  return <SheetPrimitive.Root data-slot="sheet" {...props} />;
+function Sheet({
+  open,
+  onOpenChange,
+  ...props
+}: React.ComponentProps<typeof SheetPrimitive.Root>) {
+  const [internalOpen, setInternalOpen] = React.useState(open || false);
+  const isControlled = open !== undefined;
+  const currentOpen = isControlled ? open : internalOpen;
+
+  React.useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      if (currentOpen) {
+        // Prevent default browser back behavior
+        event.preventDefault();
+
+        // Close the sheet
+        if (isControlled && onOpenChange) {
+          onOpenChange(false);
+        } else {
+          setInternalOpen(false);
+        }
+      }
+    };
+
+    if (currentOpen) {
+      // Push a new state when sheet opens
+      window.history.pushState({ sheetOpen: true }, "");
+      window.addEventListener("popstate", handlePopState);
+    }
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [currentOpen, isControlled, onOpenChange]);
+
+  const handleOpenChange = React.useCallback(
+    (newOpen: boolean) => {
+      if (isControlled && onOpenChange) {
+        onOpenChange(newOpen);
+      } else {
+        setInternalOpen(newOpen);
+      }
+
+      // Handle history when closing
+      if (!newOpen && window.history.state?.sheetOpen) {
+        window.history.back();
+      }
+    },
+    [isControlled, onOpenChange]
+  );
+
+  return (
+    <SheetPrimitive.Root
+      data-slot="sheet"
+      open={currentOpen}
+      onOpenChange={handleOpenChange}
+      {...props}
+    />
+  );
 }
 
 function SheetTrigger({

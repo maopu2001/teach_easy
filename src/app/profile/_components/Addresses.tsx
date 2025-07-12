@@ -96,28 +96,28 @@ function Addresses({ user }: AddresssProps) {
   };
 
   const AddressCard = ({ address }: { address: IAddress }) => (
-    <Card className="border">
+    <Card className="border relative pb-15">
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
           <span className="text-xl">{address.fullName}</span>
-          <div className="flex gap-2">
-            <Badge className="bg-accent text-foreground">{address.isDefault && "Default"}</Badge>
+          <div className="absolute bottom-3 left-0 right-0 md:static flex justify-center gap-2 ml-4">
+            {address.isDefault && (
+              <Badge className="bg-accent text-foreground">Default</Badge>
+            )}
             <Button
-              className="size-8 bg-accent"
+              className="h-8 md:w-8 bg-accent"
               variant="outline"
-              size="icon"
               onClick={() => handleEditAddress(address)}
             >
               <Edit />
+              <span className="md:hidden text-xs">Edit</span>
             </Button>
             <CustomAlertDialog
               title="Delete Address"
               ActionTrigger={
-                <Button
-                  className="size-8 bg-destructive hover:bg-destructive/80"
-                  size="icon"
-                >
+                <Button className="h-8 md:w-8 bg-destructive hover:bg-destructive/80">
                   <Trash />
+                  <span className="md:hidden text-xs">Delete</span>
                 </Button>
               }
               onDelete={() => handleDeleteAddress(address._id)}

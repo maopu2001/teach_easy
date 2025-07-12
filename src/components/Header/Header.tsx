@@ -151,6 +151,7 @@ const Header = () => {
 
         {/* Mobile Actions */}
         <div className="flex md:hidden items-center space-x-2">
+          <SearchBar trigger={MobileSearchTrigger} />
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="sm" className="p-2">
@@ -262,6 +263,10 @@ const searchTrigger = (
       Ctrl+K
     </span>
   </div>
+);
+
+const MobileSearchTrigger = (
+  <Search className="size-5 mr-2 text-muted-foreground" />
 );
 
 export default Header;
