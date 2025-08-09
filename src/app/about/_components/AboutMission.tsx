@@ -2,6 +2,7 @@ import SectionWrapper from "@/components/SectionWrapper";
 import SectionHeader from "@/components/SectionHeader";
 import { Target, Heart } from "lucide-react";
 import Image from "next/image";
+import getPublicUrl from "@/lib/getPublicUrl";
 
 export default function AboutMission() {
   return (
@@ -44,7 +45,7 @@ export default function AboutMission() {
 
         <div className="relative">
           <Image
-            src="/95443.png"
+            src={getPublicUrl("/95443.png")}
             width={500}
             height={400}
             alt="Educational mission"

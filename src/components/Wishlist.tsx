@@ -15,6 +15,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
+import getPublicUrl from "@/lib/getPublicUrl";
 
 type Product = {
   id: string;
@@ -119,7 +120,7 @@ const Wishlist = ({ trigger }: WishlistProps = {}) => {
                 >
                   <div className="relative size-16 rounded overflow-hidden flex-shrink-0">
                     <Image
-                      src={product.imageUrl}
+                      src={getPublicUrl(product.imageUrl) || product.imageUrl}
                       alt={product.name}
                       fill
                       className="object-cover"

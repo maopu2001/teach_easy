@@ -44,7 +44,7 @@ const Header = () => {
     };
   }, []);
 
-  const UserAuthenticated = () => (
+  const UserAuthenticated = ({ session }: { session: any }) => (
     <div className="relative" ref={userMenuRef}>
       <Button
         variant="ghost"
@@ -81,6 +81,15 @@ const Header = () => {
           >
             Profile
           </Link>
+          {session.user.role === "admin" && (
+            <Link
+              href="/admin/dashboard"
+              className="block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+              onClick={() => setUserMenuOpen(false)}
+            >
+              Admin Dashboard
+            </Link>
+          )}
           <Button
             variant="ghost"
             className="flex w-full px-4 py-2 text-sm text-red-600 hover:bg-red-200 dark:hover:bg-red-950 transition-colors justify-start items-center rounded-none"
@@ -143,7 +152,7 @@ const Header = () => {
               <div className="w-16 h-8 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
             </div>
           ) : session ? (
-            <UserAuthenticated />
+            <UserAuthenticated session={session} />
           ) : (
             <UserNotAuthenticated />
           )}
@@ -195,6 +204,19 @@ const Header = () => {
                         Profile
                       </Button>
                     </Link>
+                    {session.user.role === "admin" && (
+                      <Link
+                        href="/admin/dashboard"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Button
+                          variant="ghost"
+                          className="w-full h-10 justify-start text-base"
+                        >
+                          Admin Dashboard
+                        </Button>
+                      </Link>
+                    )}
                     <Button
                       variant="ghost"
                       className="text-base w-full h-10 justify-start text-red-600 bg-red-200"

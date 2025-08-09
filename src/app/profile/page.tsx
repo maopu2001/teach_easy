@@ -1,7 +1,8 @@
 import { auth } from "@/lib/next-auth";
 import { redirect } from "next/navigation";
-import { getUserById } from "./_actions/profile";
 import ProfileClient from "./_components/ProfileClient";
+import { connectDB } from "@/lib/connectDb";
+import { User } from "@/schema";
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -10,11 +11,21 @@ export default async function ProfilePage() {
     redirect("/auth/login");
   }
 
-  const user = await getUserById(session.user.id);
+  // Fetch user data directly from database instead of Server Action
+  try {
+    await connectDB();
+    const user = await User.findById(session.user.id)
+      .select("-password")
+      .populate("addresses")
+      .lean();
 
-  if (!user) {
+    if (!user) {
+      redirect("/auth/login");
+    }
+
+    return <ProfileClient initialUser={user as any} />;
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
     redirect("/auth/login");
   }
-
-  return <ProfileClient initialUser={user} />;
 }

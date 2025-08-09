@@ -68,7 +68,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
           );
 
           user.id = result.userId;
-          (user as any).role = role;
+          (user as any).role = result.role;
 
           cookieStore.delete("pending-role");
 

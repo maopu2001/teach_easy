@@ -15,6 +15,7 @@ export type Product = {
   class?: string;
   tag?: string;
   imageUrl: string;
+  imageGallery?: Array<{ url: string; alt: string; isPrimary?: boolean }>;
   description: string;
   fullDescription: string;
   stock: number;

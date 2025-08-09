@@ -118,6 +118,7 @@ export async function handleGoogleSignUp(
         success: true,
         message: "Welcome back!",
         userId: existingUser._id.toString(),
+        role: existingUser.role,
       };
     }
 
@@ -152,6 +153,7 @@ export async function handleGoogleSignUp(
       success: true,
       message: "Account created successfully! Welcome to TeachEasy!",
       userId: newUser._id.toString(),
+      role: newUser.role,
     };
   } catch (error) {
     console.error("Google registration error:", error);

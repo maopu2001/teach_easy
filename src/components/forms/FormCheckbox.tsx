@@ -56,16 +56,18 @@ export function FormCheckbox<
           </FormControl>
           <div className="space-y-1 leading-none w-full">
             {label && (
-              <FormLabel className="text-sm font-normal cursor-pointer w-full">
-                {label}
-                {required && <span className="text-red-500 ml-1">*</span>}
+              <FormLabel className="text-sm font-normal cursor-pointer w-full grid">
+                <p>
+                  {label}
+                  {required && <span className="text-red-500 ml-1">*</span>}
+                </p>
+                {description && (
+                  <p className="text-xs text-muted-foreground">{description}</p>
+                )}
               </FormLabel>
             )}
-            {description && (
-              <p className="text-xs text-muted-foreground">{description}</p>
-            )}
+            <FormMessage />
           </div>
-          <FormMessage />
         </FormItem>
       )}
     />

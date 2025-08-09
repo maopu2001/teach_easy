@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import getPublicUrl from "@/lib/getPublicUrl";
 import { ShoppingBag, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -54,7 +55,7 @@ export default function HeroSection() {
 const HeroImage = () => (
   <div className="hidden lg:flex justify-center">
     <Image
-      src="/95443.png"
+      src={getPublicUrl("/95443.png")}
       width={600}
       height={400}
       alt="Educational materials"

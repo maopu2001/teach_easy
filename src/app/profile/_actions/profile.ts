@@ -3,8 +3,7 @@
 import { connectDB } from "@/lib/connectDb";
 import { Address, User } from "@/schema";
 import { revalidatePath } from "next/cache";
-import { IUser } from "@/types/user";
-import { addressToObject, userToObject } from "@/lib/mongoToObj";
+import { addressToObject } from "@/lib/mongoToObj";
 
 export interface ProfileFormData {
   fullName: string;
@@ -24,23 +23,6 @@ export interface PreferencesFormData {
     marketing: boolean;
   };
   newsletter: boolean;
-}
-
-export async function getUserById(userId: string): Promise<IUser | null> {
-  try {
-    await connectDB();
-
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return null;
-    }
-
-    return userToObject(user);
-  } catch (error) {
-    console.error("Error fetching user:", error);
-    return null;
-  }
 }
 
 export async function updateProfile(userId: string, data: ProfileFormData) {
@@ -183,31 +165,6 @@ export async function deleteAvatar(userId: string) {
     return {
       success: false,
       message: error.message || "Failed to delete avatar",
-    };
-  }
-}
-
-export async function getAddresses(userId: string) {
-  try {
-    await connectDB();
-
-    const addresses = await Address.find({ user: userId });
-
-    if (!addresses || addresses.length === 0) {
-      return {
-        result: false,
-        message: "No addresses found",
-      };
-    }
-
-    return {
-      result: true,
-      addresses: addresses.map(addressToObject),
-    };
-  } catch (error: any) {
-    return {
-      result: false,
-      message: error.message || "Failed to fetch addresses",
     };
   }
 }

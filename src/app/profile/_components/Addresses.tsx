@@ -1,12 +1,7 @@
 "use client";
 import { IAddress } from "@/types/address";
 import { useCallback, useEffect, useState } from "react";
-import {
-  addAddress,
-  deleteAddress,
-  getAddresses,
-  updateAddress,
-} from "../_actions/profile";
+import { addAddress, deleteAddress, updateAddress } from "../_actions/profile";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -37,9 +32,15 @@ function Addresses({ user }: AddresssProps) {
 
   const fetchAddresses = useCallback(async () => {
     if (user && user._id) {
-      const addressesData = await getAddresses(user._id);
-      if (addressesData.result) {
-        setAddresses((addressesData.addresses as Array<any>) || []);
+      try {
+        const response = await fetch("/api/user/addresses");
+        const data = await response.json();
+
+        if (response.ok && data.addresses) {
+          setAddresses(data.addresses || []);
+        }
+      } catch (error) {
+        console.error("Error fetching addresses:", error);
       }
     }
   }, [user]);

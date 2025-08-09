@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { products } from "@/lib/testProducts";
 import Image from "next/image";
+import getPublicUrl from "@/lib/getPublicUrl";
 
 export function OrderSummary({ form }: { form: any }) {
   const { cart } = useCart();
@@ -67,7 +68,7 @@ export function OrderSummary({ form }: { form: any }) {
                         <td className="py-3 flex items-center space-x-4">
                           <div className="relative size-16">
                             <Image
-                              src={item.imageUrl}
+                              src={getPublicUrl(item.imageUrl) || item.imageUrl}
                               alt={item.name}
                               width={80}
                               height={80}

@@ -9,6 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import SectionWrapper from "../../components/SectionWrapper";
 import SectionHeader from "../../components/SectionHeader";
+import getPublicUrl from "@/lib/getPublicUrl";
 
 const categories = [
   {
@@ -45,7 +46,7 @@ export default function ProductCategoriesSection() {
           <Card key={index} className="group hover:shadow-lg transition-shadow">
             <CardHeader className="text-center space-y-4">
               <Image
-                src="/95443.png"
+                src={getPublicUrl("/95443.png")}
                 width={300}
                 height={200}
                 alt={category.title}

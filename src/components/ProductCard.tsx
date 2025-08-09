@@ -6,6 +6,7 @@ import { formatCurrency } from "@/lib/formatter";
 import Link from "next/link";
 import TagBadge from "./TagBadge";
 import DiscountBadge from "./DiscountBadge";
+import getPublicUrl from "@/lib/getPublicUrl";
 
 type ProductCardProps = {
   product: {
@@ -51,7 +52,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
         <Link className="mb-26" href={`/products/${product.id}`}>
           <Image
-            src={product.imageUrl}
+            src={getPublicUrl(product.imageUrl) || "/placeholder.svg"}
             alt={product.name}
             className="object-contain"
             fill

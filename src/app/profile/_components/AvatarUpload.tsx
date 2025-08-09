@@ -66,9 +66,10 @@ export default function AvatarUpload({
       // Create FormData for file upload
       const formData = new FormData();
       formData.append("file", file);
+      formData.append("folder", "avatars");
 
       // Upload file to server
-      const uploadResponse = await fetch("/api/upload/avatar", {
+      const uploadResponse = await fetch("/api/upload/image", {
         method: "POST",
         body: formData,
       });
@@ -114,7 +115,7 @@ export default function AvatarUpload({
     try {
       const result = await deleteAvatar(userId);
 
-      const response = await fetch("/api/upload/avatar", {
+      const response = await fetch("/api/upload/image", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

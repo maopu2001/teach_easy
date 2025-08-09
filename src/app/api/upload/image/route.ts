@@ -3,6 +3,7 @@ import { config } from "@/lib/config";
 import { uploadFile } from "@/lib/s3-service";
 import { auth } from "@/lib/next-auth";
 import { deleteFile } from "@/lib/s3-service";
+import { compressImage } from "@/lib/compressImg";
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,6 +13,7 @@ export async function POST(request: NextRequest) {
 
     const formData = await request.formData();
     const file = formData.get("file") as File;
+    const folder = (formData.get("folder") as string) || "general";
 
     if (!file)
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
@@ -33,16 +35,28 @@ export async function POST(request: NextRequest) {
     const timestamp = Date.now();
     const fileExtension = file.name.split(".").pop();
     const userId = session?.user?.id || "unknown-user";
-    const fileName = `${userId}_${timestamp}.${fileExtension}`;
+    const fileName = `${userId}_${timestamp}.${
+      fileExtension === "svg" ? "svg" : "webp"
+    }`;
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
+    const compressed = await compressImage(buffer, file.type);
+
+    // Use different folders based on the upload type
+    let uploadPath = "general";
+    if (folder === "products") {
+      uploadPath = "products/images";
+    } else if (folder === "avatars") {
+      uploadPath = "users/avatars";
+    }
+
     const fileUrl = await uploadFile(
-      buffer,
+      compressed,
       fileName,
       file.type,
-      "users/avatars"
+      uploadPath
     );
 
     return NextResponse.json({
@@ -75,11 +89,17 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    if (fileUrl.includes("users/avatars") && !fileUrl.includes(session.user.id))
+    // Admin can delete any file, users can only delete their own avatars
+    if (
+      session.user.role !== "admin" &&
+      fileUrl.includes("users/avatars") &&
+      !fileUrl.includes(session.user.id)
+    ) {
       return NextResponse.json(
-        { error: "You can only delete your own avatars" },
+        { error: "You can only delete your own files" },
         { status: 403 }
       );
+    }
 
     const success = await deleteFile(fileUrl);
 

@@ -112,27 +112,6 @@ export async function applyCoupon(code: string) {
   }
 }
 
-// Get user's saved addresses
-export async function getUserAddresses() {
-  try {
-    const session = await auth();
-    if (!session?.user) {
-      return { success: false, message: "User not authenticated" };
-    }
-
-    await connectDB();
-    const addresses = await Address.find({ user: session.user.id });
-    const formattedAddresses = addresses.map((address) =>
-      addressToObject(address)
-    );
-
-    return { success: true, addresses: formattedAddresses };
-  } catch (error) {
-    console.error("Get addresses error:", error);
-    return { success: false, message: "Failed to fetch addresses" };
-  }
-}
-
 export async function addNewAddress(addressData: any) {
   try {
     const session = await auth();

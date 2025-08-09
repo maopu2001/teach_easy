@@ -7,15 +7,17 @@ const RatingBar = ({
   rating: number;
   noOfRating: number;
 }) => {
+  // Ensure rating is a valid number
+  const validRating = typeof rating === "number" && !isNaN(rating) ? rating : 0;
+  const validNoOfRating =
+    typeof noOfRating === "number" && !isNaN(noOfRating) ? noOfRating : 0;
   const renderStar = (index: number) => {
     const starValue = index + 1;
 
-    if (rating >= starValue) {
-      return (
-        <Star className="size-4" key={index} fill="gold" color="gold" />
-      );
-    } else if (rating > index) {
-      const percentage = ((rating - index) * 100).toFixed(0);
+    if (validRating >= starValue) {
+      return <Star className="size-4" key={index} fill="gold" color="gold" />;
+    } else if (validRating > index) {
+      const percentage = ((validRating - index) * 100).toFixed(0);
       return (
         <div key={index} className="relative size-4">
           <Star className="size-4 absolute" fill="none" color="gold" />
@@ -31,17 +33,15 @@ const RatingBar = ({
       );
     } else {
       // Empty star
-      return (
-        <Star className="size-4" key={index} fill="none" color="gold" />
-      );
+      return <Star className="size-4" key={index} fill="none" color="gold" />;
     }
   };
 
   return (
     <div className="flex items-center">
       {Array.from({ length: 5 }, (_, index) => renderStar(index))}
-      <span className="mx-2 font-semibold">{rating.toFixed(1)}</span>(
-      {noOfRating} {noOfRating < 2 ? "review" : "reviews"})
+      <span className="mx-2 font-semibold">{validRating.toFixed(1)}</span>(
+      {validNoOfRating} {validNoOfRating < 2 ? "review" : "reviews"})
     </div>
   );
 };

@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import { CustomerInfoSection } from "./CustomerInfoSection";
 import { PaymentMethodSection } from "./PaymentMethodSection";
 import { DeliveryMethodSection } from "./DeliveryMethodSection";
-import { CouponSection } from "./CouponSection";
+// import { CouponSection } from "./CouponSection";
 import { OrderSummary } from "./OrderSummary";
 
 export function CheckoutForm() {
@@ -71,10 +71,10 @@ export function CheckoutForm() {
     }
   };
 
-  const handleApplyCoupon = (code: string) => {
-    console.log("Applying Coupon:", code);
-    // Handle Coupon application logic
-  };
+  // const handleApplyCoupon = (code: string) => {
+  //   console.log("Applying Coupon:", code);
+  //   // Handle Coupon application logic
+  // };
 
   return (
     <Form {...form}>
@@ -87,13 +87,14 @@ export function CheckoutForm() {
           <DeliveryMethodSection form={form} />
         </div>
 
-        <CouponSection onApplyCoupon={handleApplyCoupon} />
+        {/* <CouponSection onApplyCoupon={handleApplyCoupon} /> */}
 
         <OrderSummary form={form} />
 
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center border p-4 rounded-xl">
           <FormCheckbox
             control={form.control}
+            required
             name="payment.agreeToTerms"
             label="I agree to the terms and conditions"
             description="You must agree to the terms and conditions to proceed"

@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { addNewAddress, getUserAddresses } from "../_actions/checkout";
+import { addNewAddress } from "../_actions/checkout";
 import { useCallback, useEffect, useState } from "react";
 import { IAddress } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -29,37 +29,44 @@ export function CustomerInfoSection({ form }: CustomerInfoSectionProps) {
 
   const fetchAddresses = useCallback(async () => {
     setIsLoading(true);
-    const result = await getUserAddresses();
-    if (result.success && result.addresses) {
-      const test = result.addresses.map((address: IAddress) => {
-        if (!defaultAddress && address.isDefault) {
-          setDefaultAddress(address._id);
-          form.setValue("shipping.id", address._id);
-        }
+    try {
+      const response = await fetch("/api/user/addresses");
+      const data = await response.json();
 
-        return {
-          value: address._id,
-          label: `${address.fullName} - ${address.phone}`,
-          clickable: (
-            <div className="flex flex-col justify-start">
-              <span>
-                {address.fullName} - {address.phone}
-              </span>
-              <span>
-                {address.addressLine}, {address.cityOrUpazila} <br />
-                {address.district}
-                {address.postalCode && `- ${address.postalCode}`}
-                {", "}
-                {address.division}
-              </span>
-            </div>
-          ),
-        };
-      });
+      if (response.ok && data.addresses) {
+        const test = data.addresses.map((address: IAddress) => {
+          if (!defaultAddress && address.isDefault) {
+            setDefaultAddress(address._id);
+            form.setValue("shipping.id", address._id);
+          }
 
-      setAddressOptions(test);
+          return {
+            value: address._id,
+            label: `${address.fullName} - ${address.phone}`,
+            clickable: (
+              <div className="flex flex-col justify-start">
+                <span>
+                  {address.fullName} - {address.phone}
+                </span>
+                <span>
+                  {address.addressLine}, {address.cityOrUpazila} <br />
+                  {address.district}
+                  {address.postalCode && `- ${address.postalCode}`}
+                  {", "}
+                  {address.division}
+                </span>
+              </div>
+            ),
+          };
+        });
+
+        setAddressOptions(test);
+      }
+    } catch (error) {
+      console.error("Error fetching addresses:", error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, [form, defaultAddress]);
 
   useEffect(() => {

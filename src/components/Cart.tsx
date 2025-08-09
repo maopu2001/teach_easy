@@ -16,6 +16,7 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import { ChangeItemQuantity } from "./CustomButtons";
+import getPublicUrl from "@/lib/getPublicUrl";
 
 type Product = {
   id: string;
@@ -187,7 +188,7 @@ const Cart = ({ trigger }: CartProps = {}) => {
                 >
                   <div className="relative w-16 h-16 rounded overflow-hidden flex-shrink-0">
                     <Image
-                      src={product.imageUrl}
+                      src={getPublicUrl(product.imageUrl) || product.imageUrl}
                       alt={product.name}
                       fill
                       className="object-cover"

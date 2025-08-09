@@ -11,10 +11,12 @@ import {
 } from "@/components/ui/carousel";
 import TagBadge from "@/components/TagBadge";
 import DiscountBadge from "@/components/DiscountBadge";
+import getPublicUrl from "@/lib/getPublicUrl";
 
 interface ProductImageGalleryProps {
   product: {
     imageUrl: string;
+    imageGallery?: Array<{ url: string; alt: string; isPrimary?: boolean }>;
     name: string;
     tag?: string;
     discountInPercent?: number;
@@ -31,8 +33,11 @@ export default function ProductImageGallery({
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
 
-  // For demo purposes, we'll use the same image twice
-  const images = [product.imageUrl, product.imageUrl];
+  // Use imageGallery if available, otherwise fallback to imageUrl
+  const images =
+    product.imageGallery && product.imageGallery.length > 0
+      ? product.imageGallery.map((img) => img.url)
+      : [product.imageUrl, product.imageUrl]; // Fallback with duplicate for carousel
 
   const handleThumbnailClick = (index: number) => {
     api?.scrollTo(index);
@@ -65,7 +70,7 @@ export default function ProductImageGallery({
                   <DiscountBadge discount={product.discountInPercent} />
                 )}
                 <Image
-                  src={image}
+                  src={getPublicUrl(image) || image}
                   alt={`${product.name} view ${index + 1}`}
                   fill
                   className="object-contain transition-opacity duration-300"
@@ -115,7 +120,7 @@ export default function ProductImageGallery({
               onClick={() => handleThumbnailClick(index)}
             >
               <Image
-                src={image}
+                src={getPublicUrl(image) || image}
                 alt={`${product.name} view ${index + 1}`}
                 width={56}
                 height={56}
