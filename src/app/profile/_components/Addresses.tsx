@@ -1,7 +1,6 @@
 "use client";
 import { IAddress } from "@/types/address";
 import { useCallback, useEffect, useState } from "react";
-import { addAddress, deleteAddress, updateAddress } from "../_actions/profile";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -53,27 +52,45 @@ function Addresses({ user }: AddresssProps) {
     try {
       if (editingAddress) {
         // Update existing address
-        const result = await updateAddress(user._id, editingAddress._id, data);
-        if (result.success) {
+        const response = await fetch(`/api/user/addresses/${editingAddress._id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
           toast.success(result.message);
           setEditingAddress(null);
           fetchAddresses();
           setIsOpen(false);
         } else {
-          toast.error(result.message);
+          toast.error(result.error || "Failed to update address");
         }
       } else {
-        const result = await addAddress(user._id, data);
-        if (result.success) {
+        const response = await fetch("/api/user/addresses/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
           toast.success(result.message);
           fetchAddresses();
           setIsOpen(false);
         } else {
-          toast.error(result.message);
+          toast.error(result.error || "Failed to add address");
         }
       }
     } catch (error: any) {
-      toast.error(error.message || "An error occurred");
+      toast.error("An error occurred");
     }
   };
 
@@ -84,15 +101,20 @@ function Addresses({ user }: AddresssProps) {
 
   const handleDeleteAddress = async (addressId: string) => {
     try {
-      const result = await deleteAddress(user._id, addressId);
-      if (result.success) {
+      const response = await fetch(`/api/user/addresses/${addressId}`, {
+        method: "DELETE",
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         toast.success(result.message);
         fetchAddresses();
       } else {
-        toast.error(result.message);
+        toast.error(result.error || "Failed to delete address");
       }
     } catch (error: any) {
-      toast.error(error.message || "An error occurred");
+      toast.error("An error occurred");
     }
   };
 

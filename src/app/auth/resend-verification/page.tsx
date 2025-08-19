@@ -8,7 +8,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
-import { resendVerificationEmailAction } from "./_actions/resend";
 
 const resendSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -34,13 +33,21 @@ export default function ResendVerificationPage() {
     setMessage("");
 
     try {
-      const result = await resendVerificationEmailAction(data.email);
+      const response = await fetch("/api/auth/resend-verification", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-      if (result.success) {
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         setMessage(result.message);
         form.reset();
       } else {
-        setError(result.message);
+        setError(result.error || "Failed to send verification email");
       }
     } catch {
       setError("An error occurred while sending verification email");

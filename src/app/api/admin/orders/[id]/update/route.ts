@@ -1,18 +1,8 @@
-"use server";
-
+import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/next-auth";
 import { connectDB } from "@/lib/connectDb";
 import { Order } from "@/schema";
-import { revalidatePath } from "next/cache";
-
-// Types for the action results
-interface ActionResult {
-  success: boolean;
-  data?: any;
-  message?: string;
-  errors?: Record<string, string[] | undefined>;
-}
 
 // Zod schema for order update validation
 const updateOrderSchema = z.object({
@@ -21,26 +11,24 @@ const updateOrderSchema = z.object({
   adminNotes: z.string().optional(),
 });
 
-type UpdateOrderData = z.infer<typeof updateOrderSchema>;
-
-/**
- * Update order status and details
- */
-export async function updateOrder(
-  orderId: string,
-  data: UpdateOrderData
-): Promise<ActionResult> {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
+    const { id } = await params;
+    const body = await request.json();
+    
     // Validate input data
-    const validatedData = updateOrderSchema.parse(data);
+    const validatedData = updateOrderSchema.parse(body);
 
     // Check authentication
     const session = await auth();
     if (!session?.user || session.user.role !== "admin") {
-      return {
-        success: false,
-        message: "Unauthorized access",
-      };
+      return NextResponse.json(
+        { error: "Unauthorized access" },
+        { status: 401 }
+      );
     }
 
     // Connect to database
@@ -67,7 +55,7 @@ export async function updateOrder(
     }
 
     // Update the order
-    const updatedOrder = await Order.findByIdAndUpdate(orderId, updateData, {
+    const updatedOrder = await Order.findByIdAndUpdate(id, updateData, {
       new: true,
       runValidators: true,
     })
@@ -77,35 +65,30 @@ export async function updateOrder(
       .populate("items.product", "name price imageGallery");
 
     if (!updatedOrder) {
-      return {
-        success: false,
-        message: "Order not found",
-      };
+      return NextResponse.json(
+        { error: "Order not found" },
+        { status: 404 }
+      );
     }
 
-    // Revalidate the orders pages
-    revalidatePath("/admin/dashboard/orders");
-    revalidatePath(`/admin/dashboard/orders/${orderId}`);
-
-    return {
+    return NextResponse.json({
       success: true,
       data: updatedOrder,
       message: "Order updated successfully",
-    };
+    });
   } catch (error) {
     console.error("Error updating order:", error);
 
     if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        message: "Invalid data provided",
-        errors: error.flatten().fieldErrors,
-      };
+      return NextResponse.json(
+        { error: "Invalid data provided", details: error.errors },
+        { status: 400 }
+      );
     }
 
-    return {
-      success: false,
-      message: "Failed to update order",
-    };
+    return NextResponse.json(
+      { error: "Failed to update order" },
+      { status: 500 }
+    );
   }
 }

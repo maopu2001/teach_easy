@@ -17,7 +17,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Package, User, MapPin, Save } from "lucide-react";
 import { toast } from "sonner";
-import { updateOrder } from "../_actions/order-actions";
 
 interface OrderDetailsProps {
   orderId: string;
@@ -109,17 +108,25 @@ export default function OrderDetails({ orderId }: OrderDetailsProps) {
     try {
       setUpdating(true);
 
-      const result = await updateOrder(orderId, {
-        status,
-        trackingNumber,
-        adminNotes: notes,
+      const response = await fetch(`/api/admin/orders/${orderId}/update`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status,
+          trackingNumber,
+          adminNotes: notes,
+        }),
       });
 
-      if (result.success) {
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         setOrder(result.data);
-        toast.success("Order updated successfully");
+        toast.success(result.message);
       } else {
-        toast.error(result.message || "Failed to update order");
+        toast.error(result.error || "Failed to update order");
       }
     } catch (error) {
       console.error("Error updating order:", error);

@@ -10,7 +10,7 @@ import { FormCheckbox } from "@/components/forms";
 import {
   checkoutSchema,
   type CheckoutFormData,
-} from "@/app/checkout/_actions/checkout-schemas";
+} from "@/app/checkout/_schemas/checkout-schemas";
 import { toast } from "sonner";
 
 // Import the new section components
@@ -47,20 +47,23 @@ export function CheckoutForm() {
     setIsSubmitting(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      console.log("Checkout data:", {
-        ...data,
-        userId: session?.user?.id,
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       });
 
-      toast.success(
-        "Order placed successfully! You can track your order in your profile."
-      );
+      const result = await response.json();
 
-      // Redirect to success page
-      // router.push("/checkout/success");
+      if (response.ok && result.success) {
+        toast.success(result.message);
+        // Redirect to success page or order confirmation
+      } else {
+        toast.error(result.error || "Failed to process checkout");
+      }
+
     } catch (error) {
       console.error("Checkout error:", error);
       toast.error(

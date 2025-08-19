@@ -4,7 +4,6 @@ import { useState, useRef } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Camera, Trash, Upload, User, X } from "lucide-react";
-import { deleteAvatar, uploadAvatar } from "../_actions/profile";
 import { toast } from "sonner";
 import Image from "next/image";
 import getPublicUrl from "@/lib/getPublicUrl";
@@ -80,9 +79,19 @@ export default function AvatarUpload({
         throw new Error(uploadResult.error || "Upload failed");
 
       // Update user avatar in database
-      const result = await uploadAvatar(userId, uploadResult.url);
+      const response = await fetch("/api/user/avatar", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          avatarUrl: uploadResult.url,
+        }),
+      });
 
-      if (result.success) {
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         toast.success(result.message);
         setUser((prev: any) => ({
           ...prev,
@@ -92,7 +101,7 @@ export default function AvatarUpload({
         if (fileInput) fileInput.value = "";
         await update({ image: uploadResult.url });
       } else {
-        toast.error(result.message);
+        toast.error(result.error || "Failed to update avatar");
       }
     } catch (error) {
       toast.error(
@@ -113,9 +122,13 @@ export default function AvatarUpload({
 
     setIsDeleting(true);
     try {
-      const result = await deleteAvatar(userId);
+      const response = await fetch("/api/user/avatar", {
+        method: "DELETE",
+      });
 
-      const response = await fetch("/api/upload/image", {
+      const result = await response.json();
+
+      const deleteResponse = await fetch("/api/upload/image", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -123,11 +136,11 @@ export default function AvatarUpload({
         body: JSON.stringify({ url: currentAvatar }),
       });
 
-      if (!response.ok) {
+      if (!deleteResponse.ok) {
         console.error("Failed to delete avatar file, but database updated");
       }
 
-      if (result.success) {
+      if (response.ok && result.success) {
         toast.success(result.message);
         setUser((prev: any) => ({
           ...prev,
@@ -135,7 +148,7 @@ export default function AvatarUpload({
         }));
         await update({ image: null });
       } else {
-        toast.error(result.message);
+        toast.error(result.error || "Failed to delete avatar");
       }
     } catch (error) {
       toast.error(

@@ -17,7 +17,6 @@ import { Card } from "@/components/ui/card";
 import { Edit, Trash2, Eye } from "lucide-react";
 import { toast } from "sonner";
 import getPublicUrl from "@/lib/getPublicUrl";
-import { deleteProduct } from "../_actions/product-actions";
 
 interface Product {
   _id: string;
@@ -82,13 +81,17 @@ export default function ProductsTable() {
     }
 
     try {
-      const result = await deleteProduct(productId);
+      const response = await fetch(`/api/admin/products/${productId}`, {
+        method: "DELETE",
+      });
 
-      if (result.success) {
-        toast.success("Product deleted successfully");
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        toast.success(result.message);
         fetchProducts();
       } else {
-        toast.error(result.message || "Failed to delete product");
+        toast.error(result.error || "Failed to delete product");
       }
     } catch (error) {
       console.error("Error deleting product:", error);

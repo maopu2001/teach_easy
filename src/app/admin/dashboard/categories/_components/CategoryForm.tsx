@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { FormInput, FormSelect, FormTextarea } from "@/components/forms";
-import { createCategory, updateCategory } from "../_actions/category-actions";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 // Form validation schema
 const categorySchema = z.object({
@@ -63,6 +64,7 @@ export default function CategoryForm({
   isEdit = false,
 }: CategoryFormProps) {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const [categories, setCategories] = useState<
     Array<{ value: string; label: string }>
   >([]);
@@ -130,27 +132,31 @@ export default function CategoryForm({
     setLoading(true);
 
     try {
-      // Convert data to FormData for server action
-      const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("slug", data.slug);
-      formData.append("description", data.description || "");
-      formData.append("imageUrl", data.imageUrl || "");
-      formData.append("parent", data.parent || "");
-      formData.append("subject", data.subject || "");
-      formData.append("sortOrder", data.sortOrder?.toString() || "0");
+      const url = isEdit && initialData 
+        ? `/api/admin/categories/${initialData._id}`
+        : "/api/admin/categories";
+      
+      const method = isEdit ? "PUT" : "POST";
 
-      if (isEdit && initialData) {
-        await updateCategory(initialData._id, formData);
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        toast.success(result.message);
+        router.push("/admin/dashboard/categories");
       } else {
-        await createCategory(formData);
+        form.setError("root", { message: result.error || "Operation failed" });
       }
-      // Redirect happens in the action
     } catch (error) {
       console.error("Error submitting form:", error);
-      if (error instanceof Error) {
-        form.setError("root", { message: error.message });
-      }
+      form.setError("root", { message: "An unexpected error occurred" });
     } finally {
       setLoading(false);
     }

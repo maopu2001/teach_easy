@@ -1,10 +1,9 @@
-"use server";
-
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
+import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/connectDb";
 import { Product } from "@/schema";
+import { auth } from "@/lib/next-auth";
 import { deleteFile } from "@/lib/s3-service";
+import { z } from "zod";
 
 // Zod schema for product validation
 const productSchema = z.object({
@@ -81,82 +80,30 @@ const productSchema = z.object({
     .default([]),
 });
 
-type ProductFormData = z.infer<typeof productSchema>;
-
-export type ActionResult = {
-  success: boolean;
-  message: string;
-  errors?: Record<string, string[] | undefined>;
-};
-
-export async function createProduct(
-  data: ProductFormData
-): Promise<ActionResult> {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
+    const session = await auth();
+    if (!session?.user || session.user.role !== "admin") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id } = await params;
     await connectDB();
 
-    // Validate the data
-    const validatedData = productSchema.parse(data);
-
-    // Generate slug from name if not provided
-    if (!validatedData.slug) {
-      validatedData.slug = validatedData.name
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "");
-    }
-
-    const product = new Product(validatedData);
-    await product.save();
-
-    revalidatePath("/admin/dashboard/products");
-    return {
-      success: true,
-      message: "Product created successfully",
-    };
-  } catch (error: any) {
-    console.error("Error creating product:", error);
-
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        message: "Validation failed",
-        errors: error.flatten().fieldErrors,
-      };
-    }
-
-    if (error.code === 11000) {
-      return {
-        success: false,
-        message: "Product with this slug already exists",
-      };
-    }
-
-    return {
-      success: false,
-      message: "Failed to create product",
-    };
-  }
-}
-
-export async function updateProduct(
-  productId: string,
-  data: ProductFormData
-): Promise<ActionResult> {
-  try {
-    await connectDB();
-
-    // Validate the data
-    const validatedData = productSchema.parse(data);
+    const body = await request.json();
+    const validatedData = productSchema.parse(body);
 
     // First fetch the existing product to get current images
-    const existingProduct = await Product.findById(productId);
+    const existingProduct = await Product.findById(id);
 
     if (!existingProduct) {
-      return {
-        success: false,
-        message: "Product not found",
-      };
+      return NextResponse.json(
+        { error: "Product not found" },
+        { status: 404 }
+      );
     }
 
     // Handle image cleanup if imageGallery is being updated
@@ -190,53 +137,62 @@ export async function updateProduct(
     }
 
     // Now update the product with new data
-    // const product = await Product.findByIdAndUpdate(productId, validatedData, {
-    //   new: true,
-    //   runValidators: true,
-    // });
+    const product = await Product.findByIdAndUpdate(id, validatedData, {
+      new: true,
+      runValidators: true,
+    });
 
-    revalidatePath("/admin/dashboard/products");
-    return {
+    return NextResponse.json({
       success: true,
       message: "Product updated successfully",
-    };
+      product,
+    });
   } catch (error: any) {
     console.error("Error updating product:", error);
 
     if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        message: "Validation failed",
-        errors: error.flatten().fieldErrors,
-      };
+      return NextResponse.json(
+        { error: "Validation failed", details: error.errors },
+        { status: 400 }
+      );
     }
 
     if (error.code === 11000) {
-      return {
-        success: false,
-        message: "Product with this slug already exists",
-      };
+      return NextResponse.json(
+        { error: "Product with this slug already exists" },
+        { status: 400 }
+      );
     }
 
-    return {
-      success: false,
-      message: "Failed to update product",
-    };
+    return NextResponse.json(
+      { error: "Failed to update product" },
+      { status: 500 }
+    );
   }
 }
 
-export async function deleteProduct(productId: string): Promise<ActionResult> {
+// DELETE - Delete product
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
+    const session = await auth();
+    if (!session?.user || session.user.role !== "admin") {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id } = await params;
     await connectDB();
 
     // First fetch the product to get image URLs
-    const product = await Product.findById(productId);
+    const product = await Product.findById(id);
 
     if (!product) {
-      return {
-        success: false,
-        message: "Product not found",
-      };
+      return NextResponse.json(
+        { error: "Product not found" },
+        { status: 404 }
+      );
     }
 
     // Delete all images from S3 if they exist
@@ -257,18 +213,17 @@ export async function deleteProduct(productId: string): Promise<ActionResult> {
     }
 
     // Now delete the product from database
-    await Product.findByIdAndDelete(productId);
+    await Product.findByIdAndDelete(id);
 
-    revalidatePath("/admin/dashboard/products");
-    return {
+    return NextResponse.json({
       success: true,
       message: "Product and all associated images deleted successfully",
-    };
+    });
   } catch (error) {
     console.error("Error deleting product:", error);
-    return {
-      success: false,
-      message: "Failed to delete product",
-    };
+    return NextResponse.json(
+      { error: "Failed to delete product" },
+      { status: 500 }
+    );
   }
 }

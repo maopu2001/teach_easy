@@ -10,7 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { addNewAddress } from "../_actions/checkout";
 import { useCallback, useEffect, useState } from "react";
 import { IAddress } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -78,13 +77,22 @@ export function CustomerInfoSection({ form }: CustomerInfoSectionProps) {
 
     const handleSubmit = async (data: any) => {
       try {
-        const result = await addNewAddress(data);
-        if (result.success) {
+        const response = await fetch("/api/user/addresses/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
           setIsOpen(false);
           form.setValue("shipping.id", result.address?._id);
           fetchAddresses();
         } else {
-          console.error("Error adding address:", result.message);
+          console.error("Error adding address:", result.error);
         }
       } catch (error: any) {
         console.error("Error adding address:", error);

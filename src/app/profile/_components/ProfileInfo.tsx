@@ -12,10 +12,17 @@ import {
   FormSelect,
   FormTextarea,
 } from "@/components/forms";
-import { updateProfile, ProfileFormData } from "../_actions/profile";
 import { toast } from "sonner";
 import { IUser } from "@/types";
 import { format } from "date-fns";
+
+export interface ProfileFormData {
+  fullName: string;
+  phone?: string;
+  dateOfBirth?: string;
+  gender?: "male" | "female" | "other" | "prefer_not_to_say";
+  bio?: string;
+}
 
 const profileSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
@@ -49,13 +56,24 @@ export default function ProfileInfo({ user }: ProfileInfoProps) {
   const onSubmit = async (data: ProfileFormData) => {
     setLoading(true);
     try {
-      const result = await updateProfile(user._id, data);
+      const response = await fetch("/api/user/profile/update", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "profile",
+          ...data,
+        }),
+      });
 
-      if (result.success) {
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         toast.success(result.message);
         setIsEditing(false);
       } else {
-        toast.error(result.message);
+        toast.error(result.error || "Failed to update profile");
       }
     } catch {
       toast.error("Failed to update profile");

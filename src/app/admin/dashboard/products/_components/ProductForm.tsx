@@ -22,7 +22,7 @@ import { ArrowLeft, Save, Plus, X, Upload, Star, CircleX } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import getPublicUrl from "@/lib/getPublicUrl";
-import { createProduct, updateProduct } from "../_actions/product-actions";
+import { useRouter } from "next/navigation";
 
 // Zod schema for product validation
 const productSchema = z.object({
@@ -378,15 +378,23 @@ export default function ProductForm({
         saleEndDate: data.saleEndDate || undefined,
       };
 
-      let result;
+      const url = isEditing && productId 
+        ? `/api/admin/products/${productId}/update`
+        : "/api/admin/products/create";
+      
+      const method = isEditing ? "PUT" : "POST";
 
-      if (isEditing && productId) {
-        result = await updateProduct(productId, transformedData);
-      } else {
-        result = await createProduct(transformedData);
-      }
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(transformedData),
+      });
 
-      if (result.success) {
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         toast.success(
           isEditing
             ? "Product updated successfully!"
@@ -394,17 +402,17 @@ export default function ProductForm({
         );
         router.push("/admin/dashboard/products");
       } else {
-        if (result.errors) {
+        if (result.details) {
           // Handle field-specific errors
-          Object.entries(result.errors).forEach(([field, messages]) => {
-            if (messages) {
-              form.setError(field as keyof ProductFormData, {
-                message: Array.isArray(messages) ? messages[0] : messages,
+          result.details.forEach((error: any) => {
+            if (error.path && error.path.length > 0) {
+              form.setError(error.path.join(".") as keyof ProductFormData, {
+                message: error.message,
               });
             }
           });
         } else {
-          toast.error(result.message || "An error occurred");
+          toast.error(result.error || "An error occurred");
         }
       }
     } catch (error) {

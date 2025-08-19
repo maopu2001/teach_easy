@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { FormInput, FormSelect } from "@/components/forms";
-import { registerEmail } from "../_actions/register";
 import { toast } from "sonner";
 
 const registrationSchema = z
@@ -48,18 +47,27 @@ export default function RegistrationForm() {
     setError("");
 
     try {
-      const result = await registerEmail(data);
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
-      if (result.success) {
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         toast.success(result.message, {
           duration: 5000,
         });
         router.push("/");
+      } else {
+        setError(result.error || "Registration failed");
       }
     } catch (err) {
       setError(
-        (err as Error).message ||
-          "An error occurred during registration. Please try again."
+        "An error occurred during registration. Please try again."
       );
     } finally {
       setLoading(false);

@@ -7,10 +7,19 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { FormCheckbox } from "@/components/forms";
-import { updatePreferences, PreferencesFormData } from "../_actions/profile";
 import { toast } from "sonner";
 import { IUser } from "@/types";
 import { format } from "date-fns";
+
+export interface PreferencesFormData {
+  notifications: {
+    email: boolean;
+    sms: boolean;
+    push: boolean;
+    marketing: boolean;
+  };
+  newsletter: boolean;
+}
 
 const preferencesSchema = z.object({
   notifications: z.object({
@@ -45,12 +54,23 @@ export default function AccountSettings({ user }: AccountSettingsProps) {
   const onSubmit = async (data: PreferencesFormData) => {
     setLoading(true);
     try {
-      const result = await updatePreferences(user._id, data);
+      const response = await fetch("/api/user/profile/update", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "preferences",
+          ...data,
+        }),
+      });
 
-      if (result.success) {
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         toast.success(result.message);
       } else {
-        toast.error(result.message);
+        toast.error(result.error || "Failed to update preferences");
       }
     } catch {
       toast.error("Failed to update preferences");

@@ -24,9 +24,9 @@ import {
 import { Card } from "@/components/ui/card";
 import { Edit, Trash2, Plus } from "lucide-react";
 import Link from "next/link";
-import { deleteCategory } from "../_actions/category-actions";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { toast } from "sonner";
 
 interface Category {
   _id: string;
@@ -65,14 +65,23 @@ export default function CategoriesTable() {
   const handleDelete = async (id: string) => {
     setDeleting(id);
     try {
-      await deleteCategory(id);
+      const response = await fetch(`/api/admin/categories/${id}`, {
+        method: "DELETE",
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.error || "Failed to delete category");
+      }
+
       await fetchCategories(); // Refresh the list
       router.refresh();
     } catch (error) {
       console.error("Error deleting category:", error);
-      alert(
-        error instanceof Error ? error.message : "Failed to delete category"
-      );
+      toast.error("Failed to delete category");
     } finally {
       setDeleting(null);
     }
